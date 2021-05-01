@@ -51,7 +51,5 @@ public class TemporaryPost extends Post {
 
     public TemporaryPost(String body, AppUser appUser, String imageUrl, String videoSrc, String videoType, String postTitle, boolean isPublic) {
         super(body, appUser, imageUrl, videoSrc, videoType, postTitle, isPublic);
-
-
     }
 }
