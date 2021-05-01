@@ -20,7 +20,7 @@ public class GroupController {
     GroupRepository groupRepository;
 
     @PostMapping("/addgroup/{id}")
-    public RedirectView signup(@RequestBody Groups group){
+    public RedirectView addGroup(@RequestBody Groups group){
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
