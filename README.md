@@ -18,5 +18,4 @@ It is an App like Facebook, but with more protection for children .
 
 
 ### The Schema of the DB:
-[Schema](https://github.com/Ctrl-Alt-Defeat/Emergency/blob/main/Emergency%20(1).pdf)
-
+[Schema](https://drive.google.com/file/d/1_68vmDPKdMBPbOWGdp-7htbwpYO_m8Dp/view?usp=sharing)

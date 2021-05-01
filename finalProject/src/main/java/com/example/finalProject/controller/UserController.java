@@ -2,31 +2,24 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.Parent;
-import com.example.finalProject.entity.UserStorage;
 import com.example.finalProject.models.AuthRequest;
 import com.example.finalProject.entity.TemporaryUser;
 import com.example.finalProject.models.VerificationRequest;
 import com.example.finalProject.repository.ParentRepository;
 import com.example.finalProject.repository.TemporaryUserRepository;
 import com.example.finalProject.repository.UserRepository;
-import com.example.finalProject.repository.UserStorageRepository;
 import com.example.finalProject.util.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import org.thymeleaf.expression.Lists;
 
-import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.*;
 
 @RestController
 public class UserController {
@@ -124,8 +117,6 @@ public class UserController {
     @GetMapping("/profile")
     public Object profile(Principal p){
         try{
-            System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 return userDetails;

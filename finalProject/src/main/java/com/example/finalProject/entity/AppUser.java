@@ -10,10 +10,11 @@ public class AppUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(unique=true)
+	@Column(unique=true,nullable = false)
 	private String userName;
+	@Column(nullable = false)
 	private String password;
-	@Column(unique=true)
+	@Column(unique=true,nullable = false)
 	private String email;
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Likes> likes;
@@ -30,9 +31,6 @@ public class AppUser {
 
 	@ManyToOne
 	private Parent parent;
-
-	@ManyToOne
-	private UserStorage userStorage;
 
 	public AppUser() {
 		
@@ -55,6 +53,13 @@ public class AppUser {
 
 	@OneToMany(mappedBy = "appUserFollower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<UsersFollowers> followers;
+
+
+	@OneToMany(mappedBy = "senderUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<Message> SentFromUserMessage;
+
+	@OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<Message> SentToUserMessage;
 
 	public int getId() {
 		return id;
@@ -96,10 +101,6 @@ public class AppUser {
 		this.parent = parent;
 	}
 
-	public UserStorage getUserStorage() {
-		return userStorage;
-	}
-
 	public List<Post> getPosts() {
 		return posts;
 	}
@@ -124,10 +125,6 @@ public class AppUser {
 		this.comments = comments;
 	}
 
-	public void setUserStorage(UserStorage userStorage) {
-		this.userStorage = userStorage;
-	}
-
 	public Set<Share> getShares() {
 		return shares;
 	}
@@ -150,5 +147,37 @@ public class AppUser {
 
 	public void setEventAttendees(List<EventAttendees> eventAttendees) {
 		this.eventAttendees = eventAttendees;
+	}
+
+	public Set<UsersFollowers> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<UsersFollowers> users) {
+		this.users = users;
+	}
+
+	public Set<UsersFollowers> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<UsersFollowers> followers) {
+		this.followers = followers;
+	}
+
+	public Set<Message> getSentFromUserMessage() {
+		return SentFromUserMessage;
+	}
+
+	public void setSentFromUserMessage(Set<Message> sentFromUserMessage) {
+		SentFromUserMessage = sentFromUserMessage;
+	}
+
+	public Set<Message> getSentToUserMessage() {
+		return SentToUserMessage;
+	}
+
+	public void setSentToUserMessage(Set<Message> sentToUserMessage) {
+		SentToUserMessage = sentToUserMessage;
 	}
 }

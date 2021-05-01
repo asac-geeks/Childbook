@@ -7,7 +7,11 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class EventAttendees {
+public class Message {
+
+    public Message() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,19 +27,23 @@ public class EventAttendees {
     private Date modifiedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    AppUser appUser;
+    @JoinColumn(name = "senderUser_id")
+    private AppUser senderUser;
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
-    Event event;
+    @JoinColumn(name = "toUser_id")
+    private AppUser toUser;
 
-    public AppUser getAppUser() {
-        return appUser;
+    private String body;
+
+    public Message(AppUser senderUser, AppUser toUser,String body) {
+        this.senderUser = senderUser;
+        this.toUser = toUser;
+        this.body = body;
     }
 
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
+    public Integer getId() {
+        return id;
     }
 
     public Date getCreatedAt() {
@@ -54,11 +62,27 @@ public class EventAttendees {
         this.modifiedAt = modifiedAt;
     }
 
-    public Event getEvent() {
-        return event;
+    public AppUser getSenderUser() {
+        return senderUser;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setSenderUser(AppUser senderUser) {
+        this.senderUser = senderUser;
+    }
+
+    public AppUser getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(AppUser toUser) {
+        this.toUser = toUser;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }

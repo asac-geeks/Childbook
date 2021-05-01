@@ -8,5 +8,4 @@ public interface TemporaryUserRepository extends CrudRepository<TemporaryUser, I
     TemporaryUser findByUserName(String username);
     TemporaryUser findByParentEmail(String parentEmail);
     TemporaryUser findByParentEmailAndSerialNumber(String parentEmail,String serialNumber);
-
 }
