@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-//@RestController
+@RestController
 public class ShareController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class ShareController {
     @Autowired
     ShareRepository shareRepository;
 
-    @GetMapping("/share/{id}")
+    @PostMapping("/share/{id}")
     public ResponseEntity sharePost(@PathVariable int id) {
         if((SecurityContextHolder.getContext().getAuthentication()) != null) {
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -39,8 +39,8 @@ public class ShareController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/commentverification/{id}")
-    public ResponseEntity<Comment> shareVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
+    @PostMapping("/shareverification/{id}")
+    public ResponseEntity<Share> shareVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
         Share share = new Share();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
