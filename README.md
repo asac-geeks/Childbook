@@ -15,7 +15,7 @@
 It is an App like Facebook, but with more protection for children .
 
 ### Wireframe:
-[Wireframe](https://github.com/Ctrl-Alt-Defeat/Emergency/blob/main/wireframe%20with%20links.png)
+[Wireframe](https://drive.google.com/file/d/1ytDzcuK1z03WafD0V6LqbGC8Qtkwnpnl/view?usp=sharing)
 
 
 ### The Schema of the DB:
