@@ -14,7 +14,8 @@
 ## about Our project  : 
 It is an App like Facebook, but with more protection for children .
 
-### User stories:
+# User stories:
+
 Story 1:
 As a user I want to log my child in the website under my supervision.
 Don't allow the child to create account without parent approval.
@@ -48,14 +49,7 @@ As a user I want my child to be able to attent groups under my supervision.
 * Filter games using ML
 
 
-
-### Wireframe:
-[Wireframe](https://drive.google.com/file/d/1ytDzcuK1z03WafD0V6LqbGC8Qtkwnpnl/view?usp=sharing)
-
-
-### The Schema of the DB:# Software Requirements :
-
-[Schema](https://drive.google.com/file/d/1_68vmDPKdMBPbOWGdp-7htbwpYO_m8Dp/view?usp=sharing)
+# Software Requirements :
 
 ## Vision :
 ### Our vision is to help people to make there life easier  and meets people requests   with a shortest period of time by using our application.
@@ -97,3 +91,11 @@ First you will visit the home page you can access from the home page multi pages
 ## Non-Functional Requirements :
 1. Security : we add the important information to app.prop file to ignore it after deploying in GitHub or heroku.
 2. Usability : all the important request we add them to the header.
+
+# Domain Modeling
+### Wireframe:
+[Wireframe](https://drive.google.com/file/d/1ytDzcuK1z03WafD0V6LqbGC8Qtkwnpnl/view?usp=sharing)
+
+# DataBase 
+### The Schema of the DB:# Software Requirements :
+[Schema](https://drive.google.com/file/d/1_68vmDPKdMBPbOWGdp-7htbwpYO_m8Dp/view?usp=sharing)
