@@ -24,10 +24,10 @@ import java.util.Set;
 public class PostController {
     @Autowired
     TemporaryPostRepository temporaryPostRepository;
-    @Autowired
-    PostRepository postRepository;
-    @Autowired
-    private ParentRepository parentRepository;
+    //    @Autowired
+//    PostRepository postRepository;
+//    @Autowired
+//    private ParentRepository parentRepository;
     @Autowired
     UserRepository userRepository;
 
