@@ -10,7 +10,9 @@ import com.example.finalProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -23,15 +25,16 @@ public class CommentController {
     @Autowired
     TemporaryCommentRepository temporaryCommentRepository;
 
-    @PostMapping("/addComment")
-    public ResponseEntity<Comment> addComment(@RequestBody TemporaryComment temporaryComment) {
-        AppUser appUser = userRepository.findById(1).get();
-        Post post = postRepository.findById(1).get();
-        temporaryComment.setAppUser(appUser);
-        temporaryComment.setPost(post);
-        String parentPassword = appUser.getParent().getParentPassword();
-        temporaryComment = temporaryCommentRepository.save(temporaryComment);
-        return new ResponseEntity(temporaryComment, HttpStatus.OK);
+    @PostMapping("/addComment/{id}")
+    public ResponseEntity<Comment> addComment(@PathVariable Integer id, @RequestBody TemporaryComment temporaryComment) {
+        if((SecurityContextHolder.getContext().getAuthentication()) != null){
+            AppUser appUser = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+            Post post = postRepository.findById(id).get();
+            temporaryComment.setAppUser(appUser);
+            temporaryComment.setPost(post);
+            temporaryComment = temporaryCommentRepository.save(temporaryComment);
+            return new ResponseEntity(temporaryComment, HttpStatus.OK);
+        };
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-
 }
