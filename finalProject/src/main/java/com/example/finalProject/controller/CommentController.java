@@ -1,12 +1,8 @@
 package com.example.finalProject.controller;
 
-import com.example.finalProject.entity.AppUser;
-import com.example.finalProject.entity.Comment;
-import com.example.finalProject.entity.Post;
-import com.example.finalProject.entity.TemporaryComment;
-import com.example.finalProject.repository.PostRepository;
-import com.example.finalProject.repository.TemporaryCommentRepository;
-import com.example.finalProject.repository.UserRepository;
+import com.example.finalProject.entity.*;
+import com.example.finalProject.models.VerificationRequest;
+import com.example.finalProject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +20,10 @@ public class CommentController {
     UserRepository userRepository;
     @Autowired
     TemporaryCommentRepository temporaryCommentRepository;
+    @Autowired
+    ParentRepository parentRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     @PostMapping("/addComment/{id}")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id, @RequestBody TemporaryComment temporaryComment) {
@@ -37,4 +37,27 @@ public class CommentController {
         };
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/commentverification/{id}")
+    public ResponseEntity<Comment> commentVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
+        Comment comment = new Comment();
+        try{
+            if((SecurityContextHolder.getContext().getAuthentication()) != null){
+                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+                Parent parent = parentRepository.findByParentEmailAndParentPassword(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
+                if (parent != null && userDetails.getParent().getId() == parent.getId()){
+                    System.out.println(parent);
+                    TemporaryComment temporaryPost = temporaryCommentRepository.findById(id).get();
+                    comment = commentRepository.save(temporaryPost);
+                    temporaryCommentRepository.delete(temporaryPost);
+                }else {
+                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                }
+            }
+
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return  new ResponseEntity(comment, HttpStatus.OK);
+    };
 }
