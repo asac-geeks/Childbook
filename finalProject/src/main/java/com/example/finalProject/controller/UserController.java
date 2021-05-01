@@ -8,9 +8,11 @@ import com.example.finalProject.models.VerificationRequest;
 import com.example.finalProject.repository.ParentRepository;
 import com.example.finalProject.repository.TemporaryUserRepository;
 import com.example.finalProject.repository.UserRepository;
+import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,8 @@ import java.security.Principal;
 
 @RestController
 public class UserController {
+    @Autowired
+    SendEmailService sendEmailService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -51,7 +55,6 @@ public class UserController {
         return jwtUtil.generateToken(authrequest.getUserName());
     }
 
-
     @PostMapping("/signup")
     public RedirectView signup(@RequestBody TemporaryUser temporaryUser){
         try{
@@ -59,21 +62,21 @@ public class UserController {
             String serialNumber = (int)(Math.random()*10)+""+(int) (Math.random()*10)+(int) (Math.random()*10)+(int) (Math.random()*10)+ (int) (Math.random()*10)+(int) (Math.random()*10);
             temporaryUser.setSerialNumber(serialNumber);
             temporaryUserRepository.save(temporaryUser);
-
-            // Create a mail sender
-            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-            mailSender.setHost("spring.mail.host");
-            mailSender.setPort(2525);
-            mailSender.setUsername("f7ebf7eb692c21");
-            mailSender.setPassword("9354df9205dc26");
-
-            // Create an email instance
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("childappadmain@gmail.com");
-            mailMessage.setTo(temporaryUser.getParentEmail());
-            mailMessage.setSubject("Parent Verification from childBook");
-            mailMessage.setText("Use this Serial Number => "+ serialNumber+"to verify your child account;" );
-            mailSender.send(mailMessage);;
+            sendEmailService.sendMail("areej.obaid@yahoo.com","hiiii","hellow");
+//            // Create a mail sender
+//            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//            mailSender.setHost("spring.mail.host");
+//            mailSender.setPort(2525);
+//            mailSender.setUsername("f7ebf7eb692c21");
+//            mailSender.setPassword("9354df9205dc26");
+//
+//            // Create an email instance
+//            SimpleMailMessage mailMessage = new SimpleMailMessage();
+//            mailMessage.setFrom("childappadmain@gmail.com");
+//            mailMessage.setTo(temporaryUser.getParentEmail());
+//            mailMessage.setSubject("Parent Verification from childBook");
+//            mailMessage.setText("Use this Serial Number => "+ serialNumber+"to verify your child account;" );
+//            mailSender.send(mailMessage);;
 
         }catch (Exception ex){
             return new RedirectView("/error?message=Used%username");

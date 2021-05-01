@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class EventAttendees {
+public class GroupAttendees {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,14 +27,14 @@ public class EventAttendees {
     AppUser appUser;
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
-    Event event;
+    @JoinColumn(name = "group_id")
+    Groups group;
 
-    public EventAttendees(AppUser appUser, Event event) {
+    public GroupAttendees(AppUser appUser, Groups group) {
         this.appUser = appUser;
-        this.event = event;
+        this.group = group;
     }
-    public EventAttendees() {
+    public GroupAttendees() {
     }
 
     public AppUser getAppUser() {
@@ -61,11 +61,11 @@ public class EventAttendees {
         this.modifiedAt = modifiedAt;
     }
 
-    public Event getEvent() {
-        return event;
+    public Groups getGroup() {
+        return group;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setGroup(Groups group) {
+        this.group = group;
     }
 }

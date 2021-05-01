@@ -8,15 +8,15 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Event {
+public class Groups {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
     private AppUser appUser;
+
     private String body;
-    private String location;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -29,21 +29,18 @@ public class Event {
     private Date modifiedAt;
 
     private String imageUrl;
-
     private String title;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EventAttendees> eventAttendees;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<GroupAttendees> groupAttendees;
 
-    public Event() {
+    public Groups() {
     }
 
-    public Event(AppUser appUser, String body, String location, String imageUrl,String title) {
+    public Groups(AppUser appUser, String title, String body, String imageUrl) {
         this.appUser = appUser;
         this.body = body;
-        this.location = location;
         this.imageUrl = imageUrl;
-        this.title= title;
     }
 
     public Integer getId() {
@@ -64,14 +61,6 @@ public class Event {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public Date getCreatedAt() {
@@ -98,19 +87,19 @@ public class Event {
         this.imageUrl = imageUrl;
     }
 
-    public List<EventAttendees> getEventAttendees() {
-        return eventAttendees;
-    }
-
-    public void setEventAttendees(List<EventAttendees> eventAttendees) {
-        this.eventAttendees = eventAttendees;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public List<GroupAttendees> getGroupAttendees() {
+        return groupAttendees;
+    }
+
+    public void setGroupAttendees(List<GroupAttendees> groupAttendees) {
+        this.groupAttendees = groupAttendees;
     }
 }
