@@ -11,7 +11,6 @@ public class TemporaryUser {
     private String userName;
     private String password;
     private String parentEmail;
-
     @Column(nullable = true)
     private String serialNumber;
 

@@ -1,6 +1,7 @@
 package com.example.finalProject.models;
 
 public class Game {
+    Integer id;
     String title;
     String thumbnail;
     String short_description;
@@ -28,6 +29,10 @@ public class Game {
         this.freetogame_profile_url = freetogame_profile_url;
     }
 
+
+    public Integer getId() {
+        return id;
+    }
     public String getTitle() {
         return title;
     }
