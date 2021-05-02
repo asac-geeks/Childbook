@@ -14,7 +14,7 @@ public class AppUser {
 	private String userName;
 	@Column(nullable = false)
 	private String password;
-	@Column(unique=true,nullable = false)
+	@Column(nullable = false)
 	private String email;
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Likes> likes;

@@ -58,10 +58,6 @@ public class UserController {
     @PostMapping("/signup")
     public RedirectView signup(@RequestBody TemporaryUser temporaryUser){
         try{
-            temporaryUser.setUsername("hossam");
-            temporaryUser.setPassword("123456");
-            temporaryUser.setParentEmail("sam@gmail.com");
-            System.out.println(temporaryUser);
             String serialNumber = (int)(Math.random()*10)+""+(int) (Math.random()*10)+(int) (Math.random()*10)+(int) (Math.random()*10)+ (int) (Math.random()*10)+(int) (Math.random()*10);
             temporaryUser.setSerialNumber(serialNumber);
             temporaryUserRepository.save(temporaryUser);
@@ -92,6 +88,7 @@ public class UserController {
     public String parentVerification(@RequestBody VerificationRequest verificationRequest){
         try{
             TemporaryUser temporaryUser = temporaryUserRepository.findByParentEmailAndSerialNumber(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
+            System.out.println(temporaryUser);
             if (temporaryUser != null){
                 System.out.println(temporaryUser);
                 Parent parent = new Parent(temporaryUser.getParentEmail(),temporaryUser.getSerialNumber());
