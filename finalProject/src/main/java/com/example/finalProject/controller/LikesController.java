@@ -25,7 +25,7 @@ public class LikesController {
     PostRepository postRepository;
 
     @PostMapping("/likepost/{id}")
-    public RedirectView signup(@PathVariable Integer id){
+    public RedirectView addLike(@PathVariable Integer id){
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());

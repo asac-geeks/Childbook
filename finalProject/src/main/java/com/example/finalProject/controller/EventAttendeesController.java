@@ -24,7 +24,7 @@ public class EventAttendeesController {
     EventRepository eventRepository;
 
     @PostMapping("/attendEvent/{id}")
-    public RedirectView signup(@PathVariable Integer id){
+    public RedirectView attendEvent(@PathVariable Integer id){
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());

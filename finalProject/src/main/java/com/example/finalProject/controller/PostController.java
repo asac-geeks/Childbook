@@ -7,6 +7,7 @@ import com.example.finalProject.repository.PostRepository;
 import com.example.finalProject.repository.TemporaryPostRepository;
 import com.example.finalProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,7 +54,14 @@ public class PostController {
                 if (parent != null && userDetails.getParent().getId() == parent.getId()){
                     System.out.println(parent);
                     TemporaryPost temporaryPost = temporaryPostRepository.findById(id).get();
-                    post = postRepository.save(temporaryPost);
+                    post.setVideoType(temporaryPost.getVideoType());
+                    post.setVideoSrc(temporaryPost.getVideoSrc());
+                    post.setPostTitle(temporaryPost.getPostTitle());
+                    post.setBody(temporaryPost.getBody());
+                    post.setPublic(temporaryPost.isPublic());
+                    post.setImageUrl(temporaryPost.getImageUrl());
+                    post.setAppUser(temporaryPost.getAppUser());
+                    post = postRepository.save(post);
                     temporaryPostRepository.delete(temporaryPost);
                 }else {
                     return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -84,7 +92,8 @@ public class PostController {
     }
 
     @PutMapping("/post/{id}")
-    public ResponseEntity handleUpdatePost(@RequestParam(value = "id") Integer id,@RequestParam Post updatePost) {
+    public ResponseEntity handleUpdatePost(@PathVariable Integer id,@RequestBody Post updatePost) {
+        System.out.println(updatePost);
         Post post = postRepository.findById(id).get();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
@@ -106,7 +115,7 @@ public class PostController {
     }
 
     @GetMapping("/post/{id}")
-    public ResponseEntity<Post> handleGetPost(@RequestParam(value = "id") Integer id) {
+    public ResponseEntity<Post> handleGetPost(@PathVariable Integer id) {
         try{
             Post post = postRepository.findById(id).get();
             return new ResponseEntity(post,HttpStatus.OK);
@@ -116,7 +125,7 @@ public class PostController {
     }
 
     @GetMapping("/userposts/{id}")
-    public ResponseEntity<Post> handleUserPost(@RequestParam(value = "id") Integer id) {
+    public ResponseEntity<Post> handleUserPost(@PathVariable Integer id) {
         try{
             List<Post> posts = userRepository.findById(id).get().getPosts();
             return new ResponseEntity(posts,HttpStatus.OK);
@@ -126,8 +135,7 @@ public class PostController {
     }
 
     @GetMapping("/myposts")
-    public ResponseEntity<List<Post>> handleMyPost(@RequestParam(value = "id") Integer id) {
-        Post post = postRepository.findById(id).get();
+    public ResponseEntity<List<Post>> handleMyPost() {
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());

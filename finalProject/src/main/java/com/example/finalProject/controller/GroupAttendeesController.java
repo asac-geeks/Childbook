@@ -4,10 +4,13 @@ package com.example.finalProject.controller;
 import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.EventAttendees;
 import com.example.finalProject.entity.GroupAttendees;
+import com.example.finalProject.entity.Groups;
 import com.example.finalProject.repository.GroupAttendeesRepository;
 import com.example.finalProject.repository.GroupRepository;
 import com.example.finalProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,16 +30,17 @@ public class GroupAttendeesController {
 
 
     @PostMapping("/attendGroup/{id}")
-    public RedirectView signup(@PathVariable Integer id){
+    public ResponseEntity<GroupAttendees> attendGroup(@PathVariable Integer id){
+        GroupAttendees groupAttendees = new GroupAttendees();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                GroupAttendees groupAttendees =  groupAttendeesRepository.save(new GroupAttendees(userDetails,groupRepository.findById(id).get()));
+                groupAttendees =  groupAttendeesRepository.save(new GroupAttendees(userDetails,groupRepository.findById(id).get()));
             }
 
         }catch (Exception ex){
-            return new RedirectView("/error?message=Used%username");
+            return new ResponseEntity(groupAttendees, HttpStatus.OK);
         }
-        return new RedirectView("/");
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     };
 }
