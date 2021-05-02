@@ -58,6 +58,9 @@ public class UserController {
     @PostMapping("/signup")
     public RedirectView signup(@RequestBody TemporaryUser temporaryUser){
         try{
+            temporaryUser.setUsername("hossam");
+            temporaryUser.setPassword("123456");
+            temporaryUser.setParentEmail("sam@gmail.com");
             System.out.println(temporaryUser);
             String serialNumber = (int)(Math.random()*10)+""+(int) (Math.random()*10)+(int) (Math.random()*10)+(int) (Math.random()*10)+ (int) (Math.random()*10)+(int) (Math.random()*10);
             temporaryUser.setSerialNumber(serialNumber);

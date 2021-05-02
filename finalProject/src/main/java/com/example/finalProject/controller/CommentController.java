@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -38,7 +39,7 @@ public class CommentController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/commentverification/{id}")
+    @PutMapping("/commentverification/{id}")
     public ResponseEntity<Comment> commentVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
         Comment comment = new Comment();
         try{
@@ -47,9 +48,13 @@ public class CommentController {
                 Parent parent = parentRepository.findByParentEmailAndParentPassword(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
                 if (parent != null && userDetails.getParent().getId() == parent.getId()){
                     System.out.println(parent);
-                    TemporaryComment temporaryPost = temporaryCommentRepository.findById(id).get();
-                    comment = commentRepository.save(temporaryPost);
-                    temporaryCommentRepository.delete(temporaryPost);
+                    TemporaryComment temporaryComment = temporaryCommentRepository.findById(id).get();
+                    comment.setBody(temporaryComment.getBody());
+                    comment.setAppUser(temporaryComment.getAppUser());
+                    comment.setPost(temporaryComment.getPost());
+                    comment.setAppUser(temporaryComment.getAppUser());
+                    comment = commentRepository.save(comment);
+                    temporaryCommentRepository.delete(temporaryComment);
                 }else {
                     return new ResponseEntity(HttpStatus.BAD_REQUEST);
                 }
