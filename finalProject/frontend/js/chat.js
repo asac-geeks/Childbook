@@ -1,4 +1,4 @@
-const url = 'http://localhost:3000';
+const url = 'http://localhost:8081';
 let stompClient;
 let selectedUser;
 let newMessages = new Map();
