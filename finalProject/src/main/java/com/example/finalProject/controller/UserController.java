@@ -14,6 +14,7 @@ import com.example.finalProject.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,28 +55,37 @@ public class UserController {
 
         return jwtUtil.generateToken(authrequest.getUserName());
     }
+    @Autowired
+    private JavaMailSender emailSender;
+
+    public void sendSimpleMessage(String to, String subject, String name,String pass) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("childappadmain@gmail.com");
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText("Your Child "+ name + " is trying to create account in our web site, is you are accepting that use this link => (http://localhost:8081/parentverification) to verification the account, enter you email with this password = >"+pass  +". you can use this pass word to accept you child sure or add posts or chat with author children");
+            emailSender.send(message);
+            System.out.println("done");
+        }catch (Exception ex){
+            System.out.println(ex);
+        }
+
+    }
 
     @PostMapping("/signup")
     public RedirectView signup(@RequestBody TemporaryUser temporaryUser){
         try{
-            String serialNumber = (int)(Math.random()*10)+""+(int) (Math.random()*10)+(int) (Math.random()*10)+(int) (Math.random()*10)+ (int) (Math.random()*10)+(int) (Math.random()*10);
-            temporaryUser.setSerialNumber(serialNumber);
-            temporaryUserRepository.save(temporaryUser);
-            sendEmailService.sendMail("areej.obaid@yahoo.com","hiiii","hellow");
-//            // Create a mail sender
-//            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//            mailSender.setHost("spring.mail.host");
-//            mailSender.setPort(2525);
-//            mailSender.setUsername("f7ebf7eb692c21");
-//            mailSender.setPassword("9354df9205dc26");
-//
-//            // Create an email instance
-//            SimpleMailMessage mailMessage = new SimpleMailMessage();
-//            mailMessage.setFrom("childappadmain@gmail.com");
-//            mailMessage.setTo(temporaryUser.getParentEmail());
-//            mailMessage.setSubject("Parent Verification from childBook");
-//            mailMessage.setText("Use this Serial Number => "+ serialNumber+"to verify your child account;" );
-//            mailSender.send(mailMessage);;
+            if(userRepository.findByUserName(temporaryUser.getUsername()) == null){
+                String serialNumber = (int)(Math.random()*10)+""+(int) (Math.random()*10)+(int) (Math.random()*10)+(int) (Math.random()*10)+ (int) (Math.random()*10)+(int) (Math.random()*10);
+                temporaryUser.setSerialNumber(serialNumber);
+                temporaryUserRepository.save(temporaryUser);
+                sendSimpleMessage(temporaryUser.getParentEmail(),"Verification",temporaryUser.getUsername(),temporaryUser.getSerialNumber());
+                temporaryUserRepository.delete(temporaryUser);
+            }else {
+                return new RedirectView("/error?message=already used username");
+            }
+
 
         }catch (Exception ex){
             return new RedirectView("/error?message=Used%username");
@@ -106,16 +116,7 @@ public class UserController {
         }
     };
 
-//    @PostMapping("/signup")
-//    public RedirectView signup(@RequestBody AppUser user){
-//        try{
-//            System.out.println(user);
-//            userRepository.save(user);
-//        }catch (Exception ex){
-//            return new RedirectView("/error?message=Used%username");
-//        }
-//        return new RedirectView("/");
-//    }
+
 
     @GetMapping("/profile")
     public Object profile(Principal p){

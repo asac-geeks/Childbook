@@ -1,6 +1,9 @@
 package com.example.finalProject.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +24,11 @@ public class AppUser {
 
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Share> shares;
+
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "createdAt")
+	private Date createdAt;
 
 	public AppUser(String userName, String password, String email,Parent parent) {
 		this.userName = userName;
