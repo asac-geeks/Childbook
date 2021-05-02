@@ -31,6 +31,5 @@ public class SendEmailService {
             System.out.println(ex);
         }
 
-
     }
 }
