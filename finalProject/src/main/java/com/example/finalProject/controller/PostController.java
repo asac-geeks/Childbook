@@ -60,9 +60,12 @@ public class PostController {
                     post.setBody(temporaryPost.getBody());
                     post.setPublic(temporaryPost.isPublic());
                     post.setImageUrl(temporaryPost.getImageUrl());
-                    post.setAppUser(temporaryPost.getAppUser());
+                    post.setAppUser(userDetails);
+                    System.out.println("salah");
                     post = postRepository.save(post);
+                    System.out.println("salahبعد السيف");
                     temporaryPostRepository.delete(temporaryPost);
+                    System.out.println("salahديليت");
                 }else {
                     return new ResponseEntity(HttpStatus.BAD_REQUEST);
                 }
