@@ -60,5 +60,22 @@ public class ShareController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return  new ResponseEntity(share, HttpStatus.OK);
-    };
+    }
+
+    @DeleteMapping("/deleteshare/{id}")
+    public ResponseEntity handleDeleteShare(@PathVariable Integer id) {
+        System.out.println(id);
+        try{
+            if((SecurityContextHolder.getContext().getAuthentication()) != null){
+                Share share = shareRepository.findById(id).get();
+                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+                if (share != null && userDetails.getId() == share.getAppUser().getId()){
+                    shareRepository.deleteById(id);
+                }
+            }
+            return new ResponseEntity(HttpStatus.OK);
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
