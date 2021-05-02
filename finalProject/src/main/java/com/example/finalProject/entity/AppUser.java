@@ -43,7 +43,7 @@ public class AppUser {
 	private List<Comment> comments;
 
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Event> events;
+	public List<Event> events;
 
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<EventAttendees> eventAttendees;
