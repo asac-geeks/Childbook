@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,5 +43,17 @@ public class GroupAttendeesController {
             return new ResponseEntity(groupAttendees, HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
-    };
+    }
+
+    @DeleteMapping("/attendGroup/{id}")
+    public ResponseEntity deleteAteendGroup(@PathVariable("id") Integer id){
+
+            try{
+                groupAttendeesRepository.deleteById(id);
+            }catch (IllegalArgumentException argumentException){
+              return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

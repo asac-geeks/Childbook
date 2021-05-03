@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-public class ApisController {
+public class GameController {
 
 
     @Autowired
@@ -25,7 +25,6 @@ public class ApisController {
     @GetMapping("/games/category/{category}")
     public Flux<Game> getGameByCategory(@PathVariable("category") String category){
         String url = "https://www.freetogame.com/api/games?category="+ category;
-        System.out.println(category);
         return webClient.get().uri(url).retrieve().bodyToFlux(Game.class);
 
     }

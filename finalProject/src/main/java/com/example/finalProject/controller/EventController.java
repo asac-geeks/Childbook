@@ -52,6 +52,4 @@ public class EventController {
       return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
   }
-
-
 }
