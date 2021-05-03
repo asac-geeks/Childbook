@@ -25,6 +25,18 @@ public class AppUser {
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Share> shares;
 
+	//===> added by salah ================================================================
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<Groups> groups;
+	public Set<Groups> getGroups() {
+		return groups;
+	}
+	public void setGroups(Set<Groups> groups) {
+		this.groups = groups;
+	}
+	//===> added by salah ================================================================
+
+
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createdAt")
@@ -186,4 +198,7 @@ public class AppUser {
 	public void setSentToUserMessage(Set<Message> sentToUserMessage) {
 		SentToUserMessage = sentToUserMessage;
 	}
+
+
+
 }

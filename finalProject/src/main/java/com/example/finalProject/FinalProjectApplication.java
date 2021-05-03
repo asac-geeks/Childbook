@@ -7,8 +7,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 public class FinalProjectApplication {
-	@Bean
-	public WebClient getWebClient(){ return WebClient.create();}
+//	@Bean
+//	public WebClient getWebClient(){ return WebClient.create();}
 
 	@Bean
 	public WebClient getWebClient(){ return WebClient.create();}
