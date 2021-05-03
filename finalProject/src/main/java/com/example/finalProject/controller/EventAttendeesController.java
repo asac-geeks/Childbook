@@ -1,5 +1,6 @@
 package com.example.finalProject.controller;
 import com.example.finalProject.entity.AppUser;
+import com.example.finalProject.entity.Event;
 import com.example.finalProject.entity.EventAttendees;
 import com.example.finalProject.entity.Likes;
 import com.example.finalProject.repository.EventAttendeesRepository;
@@ -10,11 +11,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
 
 @RestController
 public class EventAttendeesController {
@@ -52,4 +52,24 @@ public class EventAttendeesController {
         return new ResponseEntity(HttpStatus.OK);
 
     }
+
+//    @GetMapping("/userevents")
+//    public ResponseEntity renderEventFromUser() {
+////    Event event = eventRepository.findById(id).get();
+//        List<Event> userEvents = null;
+//        try {
+//            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+//                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+//                if (userDetails.getEvents() != null) {
+//                    userEvents = userDetails.getEvents();
+//                    System.out.println(userEvents.get(0));
+//
+//                }
+//            }
+//            return new ResponseEntity(userEvents, HttpStatus.OK);
+//
+//        } catch (Exception ex) {
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }
