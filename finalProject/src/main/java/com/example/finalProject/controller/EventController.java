@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class EventController {
@@ -115,7 +116,7 @@ public class EventController {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 if (userDetails.getEvents() != null) {
                     System.out.println("salah");
-                    List<Event> userEvents = userDetails.getEvents();
+                    Set<Event> userEvents = (Set<Event>) userDetails.getEvents();
                     return new ResponseEntity(userEvents, HttpStatus.OK);
                 }
             }
