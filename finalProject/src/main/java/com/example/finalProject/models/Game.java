@@ -1,4 +1,8 @@
 package com.example.finalProject.models;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 public class Game {
     Integer id;
@@ -28,8 +32,6 @@ public class Game {
         this.release_date = release_date;
         this.freetogame_profile_url = freetogame_profile_url;
     }
-
-
     public Integer getId() {
         return id;
     }
