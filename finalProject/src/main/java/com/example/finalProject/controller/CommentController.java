@@ -72,7 +72,6 @@ public class CommentController {
 
                 if (commentUpdate != null && commentUpdate.getAppUser().getId() == userDetails.getId()){
                     commentUpdate.setBody(comment.getBody());
-                    commentUpdate.setPost(comment.getPost());
                     commentRepository.save(commentUpdate);
 
                 }else {
@@ -87,7 +86,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comment/{id}")
-    public ResponseEntity handleDeletePost(@RequestParam(value = "id") Integer id) {
+    public ResponseEntity handleDeletePost(@PathVariable Integer id) {
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 Comment comment = commentRepository.findById(id).get();
