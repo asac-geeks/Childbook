@@ -61,8 +61,9 @@ public class PostController {
                     post.setPublic(temporaryPost.isPublic());
                     post.setImageUrl(temporaryPost.getImageUrl());
                     post.setAppUser(userDetails);
+                    System.out.println(userDetails);
                     System.out.println("salah");
-                    post = postRepository.save(post);
+                    postRepository.save(post);
                     System.out.println("salahبعد السيف");
                     temporaryPostRepository.delete(temporaryPost);
                     System.out.println("salahديليت");

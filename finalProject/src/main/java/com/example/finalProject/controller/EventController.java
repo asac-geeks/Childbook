@@ -29,6 +29,7 @@ public class EventController {
   public ResponseEntity getAllEvent(Principal p) {
     try{
       if((SecurityContextHolder.getContext().getAuthentication()) != null){}
+      System.out.println(eventRepository.findAll());
       return new ResponseEntity(eventRepository.findAll(), HttpStatus.OK);
     }catch (Exception ex){
       return new ResponseEntity(HttpStatus.BAD_REQUEST);
