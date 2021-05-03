@@ -63,6 +63,7 @@ public class EventController {
     }
   }
 
+
   @PutMapping("/event/{id}")
   public ResponseEntity<Event> updateEvent(@PathVariable Integer id , @RequestBody Event event){
     Event event1=eventRepository.findById(id).get();
@@ -105,6 +106,4 @@ public class EventController {
     }
     return  new RedirectView("/");
   }
-
-
 }

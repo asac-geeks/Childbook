@@ -2,6 +2,8 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.models.Game;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
 
 @RestController
@@ -29,7 +30,6 @@ public class GameController {
     @GetMapping("/games/category/{category}")
     public Flux<Game> getGameByCategory(@PathVariable("category") String category){
         String url = "https://www.freetogame.com/api/games?category="+ category;
-        System.out.println(category);
         return webClient.get().uri(url).retrieve().bodyToFlux(Game.class);
 
     }
@@ -42,6 +42,4 @@ public class GameController {
          /*.onStatus(httpStatus -> HttpStatus.NOT_FOUND.equals(httpStatus),
               clientResponse -> Mono.empty())*/
     }
-
-//    https://www.freetogame.com/api/games?category=shooter
 }

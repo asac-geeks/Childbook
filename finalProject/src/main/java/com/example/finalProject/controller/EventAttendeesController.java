@@ -6,7 +6,11 @@ import com.example.finalProject.repository.EventAttendeesRepository;
 import com.example.finalProject.repository.EventRepository;
 import com.example.finalProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +30,7 @@ public class EventAttendeesController {
     @PostMapping("/attendEvent/{id}")
     public RedirectView attendEvent(@PathVariable Integer id){
         try{
-            if((SecurityContextHolder.getContext().getAuthentication()) != null){
+            if((SecurityContextHolder.getContext().getAuthentication())!= null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 EventAttendees eventAttendees =  eventAttendeesRepository.save(new EventAttendees(userDetails,eventRepository.findById(id).get()));
             }
@@ -35,6 +39,17 @@ public class EventAttendeesController {
             return new RedirectView("/error?message=Used%username");
         }
         return new RedirectView("/");
-    };
+    }
 
+    @DeleteMapping("/attendEvent/{id}")
+    public ResponseEntity deleteAttendEvent(@PathVariable("id")Integer id){
+        try{
+            eventAttendeesRepository.deleteById(id);
+        }catch (NullPointerException ex)
+        {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+
+    }
 }

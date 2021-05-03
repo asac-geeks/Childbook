@@ -40,9 +40,7 @@ public class AppUser {
 	@ManyToOne
 	private Parent parent;
 
-	public AppUser() {
-		
-	}
+	public AppUser() {}
 
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Post> posts;

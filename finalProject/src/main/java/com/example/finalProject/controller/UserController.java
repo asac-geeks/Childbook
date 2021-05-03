@@ -11,8 +11,11 @@ import com.example.finalProject.repository.UserRepository;
 import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -48,8 +51,7 @@ public class UserController {
     public String generateToken(@RequestBody AuthRequest authrequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authrequest.getUserName(), authrequest.getPassword()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new Exception("Invalid username and password");
         }
 
@@ -85,9 +87,7 @@ public class UserController {
             }else {
                 return new RedirectView("/error?message=already used username");
             }
-
-
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return new RedirectView("/error?message=Used%username");
         }
         return new RedirectView("/");
@@ -101,33 +101,62 @@ public class UserController {
             System.out.println(temporaryUser);
             if (temporaryUser != null){
                 System.out.println(temporaryUser);
-                Parent parent = new Parent(temporaryUser.getParentEmail(),temporaryUser.getSerialNumber());
+                Parent parent = new Parent(temporaryUser.getParentEmail(), temporaryUser.getSerialNumber());
                 parent = parentRepository.save(parent);
-                AppUser appUser = new AppUser(temporaryUser.getUsername(),temporaryUser.getPassword(),temporaryUser.getParentEmail(),parent);
+                AppUser appUser = new AppUser(temporaryUser.getUsername(), temporaryUser.getPassword(), temporaryUser.getParentEmail(), parent);
                 userRepository.save(appUser);
                 temporaryUserRepository.delete(temporaryUser);
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getUserName(), appUser.getPassword()));
                 return jwtUtil.generateToken(appUser.getUserName());
-            }else {
+            } else {
                 return "Wrong Email or Password";
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return "error";
         }
-    };
+    }
+
+    ;
 
 
 
     @GetMapping("/profile")
-    public Object profile(Principal p){
-        try{
-            if((SecurityContextHolder.getContext().getAuthentication()) != null){
+    public Object profile(Principal p) {
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 return userDetails;
             }
             return "login before";
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return new RedirectView("/error?message=Used%username");
+        }
+    }
+
+    //.............................................AppUser..............................................
+    /*
+     *  API youtube call + strict for kids
+     *  Update user
+     *      1. insert parent
+     *      2. insert app_user
+     * */
+    // update child data
+    @PutMapping("/profile")
+    public ResponseEntity updateUser(@RequestBody AppUser user) {
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+                if (userDetails != null) {
+                    System.out.println(user.toString());
+                    userDetails.setUserName(user.getUserName());
+                    userDetails.setEmail(user.getEmail());
+                    userDetails.setPassword(user.getPassword());
+                      userRepository.save(userDetails);
+                }
+            }
+            return new ResponseEntity<AppUser>(HttpStatus.OK);
+        } catch (Exception n) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -21,7 +21,6 @@ public class LikesController {
     @Autowired
     UserRepository userRepository;
 
-
     @Autowired
     PostRepository postRepository;
 
