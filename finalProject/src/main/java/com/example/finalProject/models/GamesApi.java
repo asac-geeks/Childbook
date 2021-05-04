@@ -1,11 +1,15 @@
 package com.example.finalProject.models;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.example.finalProject.entity.AppUser;
 
+import javax.persistence.*;
+
+@Entity
 public class GamesApi {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
     String title;
     String thumbnail;
     String short_description;
@@ -14,13 +18,10 @@ public class GamesApi {
     String platform;
     String release_date;
     String freetogame_profile_url;
+    @ManyToOne
+    AppUser user;
 
     public GamesApi(){}
-
-    public GamesApi(String title, String thumbnail) {
-        this.title = title;
-        this.thumbnail = thumbnail;
-    }
 
     public GamesApi(String title, String thumbnail, String short_description, String game_url, String genre, String platform, String release_date, String freetogame_profile_url) {
         this.title = title;

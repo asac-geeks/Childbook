@@ -1,5 +1,6 @@
 package com.example.finalProject.entity;
 
+import com.example.finalProject.models.GamesApi;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -78,6 +79,9 @@ public class AppUser {
 
 	@OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Message> SentToUserMessage;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	List<GamesApi> FavouriteGames;
 
 	public int getId() {
 		return id;
