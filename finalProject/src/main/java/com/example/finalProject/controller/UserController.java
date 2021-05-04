@@ -134,13 +134,7 @@ public class UserController {
     }
 
     //.............................................AppUser..............................................
-    /*
-     *  API youtube call + strict for kids
-     *  Update user
-     *      1. insert parent
-     *      2. insert app_user
-     * */
-    // update child data
+
     @PutMapping("/profile")
     public ResponseEntity updateUser(@RequestBody AppUser user) {
         try {
