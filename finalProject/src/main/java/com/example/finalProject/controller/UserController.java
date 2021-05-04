@@ -12,6 +12,7 @@ import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
 import org.apache.catalina.User;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.lang.model.element.PackageElement;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.Period;
+
 
 @RestController
 public class UserController {
@@ -78,13 +83,17 @@ public class UserController {
 
     @PostMapping("/signup")
     public RedirectView signup(@RequestBody TemporaryUser temporaryUser) {
+        LocalDate now=LocalDate.now();
+        System.out.println("age now ");
+        System.out.println(now.getYear()-temporaryUser.getDateOfBirth().getYear());
+if(now.getYear()-temporaryUser.getDateOfBirth().getYear()<18)
         try {
             if (userRepository.findByUserName(temporaryUser.getUsername()) == null) {
                 String serialNumber = (int) (Math.random() * 10) + "" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + (int) (Math.random() * 10) + (int) (Math.random() * 10) + (int) (Math.random() * 10);
                 temporaryUser.setSerialNumber(serialNumber);
                 temporaryUserRepository.save(temporaryUser);
+                System.out.println("Saved");
                 sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
-                temporaryUserRepository.delete(temporaryUser);
             } else {
                 return new RedirectView("/error?message=already used username");
             }
