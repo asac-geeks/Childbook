@@ -4,4 +4,5 @@ import com.example.finalProject.entity.Groups;
 import org.springframework.data.repository.CrudRepository;
 
 public interface GroupRepository extends CrudRepository<Groups, Integer> {
+    Groups findByTitle(String title);
 }

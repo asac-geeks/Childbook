@@ -12,6 +12,7 @@ import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
 import org.apache.catalina.User;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.lang.model.element.PackageElement;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.Period;
+
 
 @RestController
 public class UserController {
@@ -57,49 +62,56 @@ public class UserController {
 
         return jwtUtil.generateToken(authrequest.getUserName());
     }
+
     @Autowired
     private JavaMailSender emailSender;
 
-    public void sendSimpleMessage(String to, String subject, String name,String pass) {
+    public void sendSimpleMessage(String to, String subject, String name, String pass) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("childappadmain@gmail.com");
             message.setTo(to);
             message.setSubject(subject);
-            message.setText("Your Child "+ name + " is trying to create account in our web site, is you are accepting that use this link => (http://localhost:8081/parentverification) to verification the account, enter you email with this password = >"+pass  +". you can use this pass word to accept you child sure or add posts or chat with author children");
+            message.setText("Your Child " + name + " is trying to create account in our web site, is you are accepting that use this link => (http://localhost:8081/parentverification) to verification the account, enter you email with this password = >" + pass + ". you can use this pass word to accept you child sure or add posts or chat with author children");
             emailSender.send(message);
             System.out.println("done");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
 
     }
 
     @PostMapping("/signup")
-    public RedirectView signup(@RequestBody TemporaryUser temporaryUser){
-        try{
-            if(userRepository.findByUserName(temporaryUser.getUsername()) == null){
-                String serialNumber = (int)(Math.random()*10)+""+(int) (Math.random()*10)+(int) (Math.random()*10)+(int) (Math.random()*10)+ (int) (Math.random()*10)+(int) (Math.random()*10);
+    public RedirectView signup(@RequestBody TemporaryUser temporaryUser) {
+        LocalDate now=LocalDate.now();
+        System.out.println("age now ");
+        System.out.println(now.getYear()-temporaryUser.getDateOfBirth().getYear());
+if(now.getYear()-temporaryUser.getDateOfBirth().getYear()<18)
+        try {
+            if (userRepository.findByUserName(temporaryUser.getUsername()) == null) {
+                String serialNumber = (int) (Math.random() * 10) + "" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + (int) (Math.random() * 10) + (int) (Math.random() * 10) + (int) (Math.random() * 10);
                 temporaryUser.setSerialNumber(serialNumber);
                 temporaryUserRepository.save(temporaryUser);
-                sendSimpleMessage(temporaryUser.getParentEmail(),"Verification",temporaryUser.getUsername(),temporaryUser.getSerialNumber());
-                temporaryUserRepository.delete(temporaryUser);
-            }else {
+                System.out.println("Saved");
+                sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
+            } else {
                 return new RedirectView("/error?message=already used username");
             }
         } catch (Exception ex) {
             return new RedirectView("/error?message=Used%username");
         }
         return new RedirectView("/");
-    };
+    }
+
+    ;
 
 
     @PostMapping("/parentverification")
-    public String parentVerification(@RequestBody VerificationRequest verificationRequest){
-        try{
-            TemporaryUser temporaryUser = temporaryUserRepository.findByParentEmailAndSerialNumber(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
+    public String parentVerification(@RequestBody VerificationRequest verificationRequest) {
+        try {
+            TemporaryUser temporaryUser = temporaryUserRepository.findByParentEmailAndSerialNumber(verificationRequest.getParentEmail(), verificationRequest.getSerialNumber());
             System.out.println(temporaryUser);
-            if (temporaryUser != null){
+            if (temporaryUser != null) {
                 System.out.println(temporaryUser);
                 Parent parent = new Parent(temporaryUser.getParentEmail(), temporaryUser.getSerialNumber());
                 parent = parentRepository.save(parent);
@@ -117,7 +129,6 @@ public class UserController {
     }
 
     ;
-
 
 
     @GetMapping("/profile")
@@ -145,7 +156,7 @@ public class UserController {
                     userDetails.setUserName(user.getUserName());
                     userDetails.setEmail(user.getEmail());
                     userDetails.setPassword(user.getPassword());
-                      userRepository.save(userDetails);
+                    userRepository.save(userDetails);
                 }
             }
             return new ResponseEntity<AppUser>(HttpStatus.OK);
@@ -153,4 +164,21 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+
+
+    @GetMapping("/user")
+    public ResponseEntity userByName(@RequestParam String userName) {
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                AppUser userDetails = userRepository.findByUserName(userName);
+                System.out.println(userDetails.getEmail());
+                return new ResponseEntity<AppUser>(userDetails,HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+
 }

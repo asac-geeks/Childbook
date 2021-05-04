@@ -1,6 +1,7 @@
 package com.example.finalProject.entity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 public class TemporaryUser {
@@ -11,15 +12,27 @@ public class TemporaryUser {
     private String userName;
     private String password;
     private String parentEmail;
+
+    public TemporaryUser(String userName, String password, String parentEmail, LocalDate dateOfBirth) {
+        this.userName = userName;
+        this.password = password;
+        this.parentEmail = parentEmail;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    private LocalDate dateOfBirth;
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     @Column(nullable = true)
     private String serialNumber;
 
-
-    public TemporaryUser(String username, String password, String parentEmail) {
-        this.userName = username;
-        this.password = password;
-        this.parentEmail = parentEmail;
-    }
 
     public TemporaryUser() {
 
