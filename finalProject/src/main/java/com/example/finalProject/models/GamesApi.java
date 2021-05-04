@@ -4,7 +4,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-public class Game {
+public class GamesApi {
     Integer id;
     String title;
     String thumbnail;
@@ -15,14 +15,14 @@ public class Game {
     String release_date;
     String freetogame_profile_url;
 
-    public Game(){}
+    public GamesApi(){}
 
-    public Game(String title, String thumbnail) {
+    public GamesApi(String title, String thumbnail) {
         this.title = title;
         this.thumbnail = thumbnail;
     }
 
-    public Game(String title, String thumbnail, String short_description, String game_url, String genre, String platform, String release_date, String freetogame_profile_url) {
+    public GamesApi(String title, String thumbnail, String short_description, String game_url, String genre, String platform, String release_date, String freetogame_profile_url) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.short_description = short_description;
