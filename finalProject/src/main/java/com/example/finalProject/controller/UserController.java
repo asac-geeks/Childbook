@@ -103,7 +103,7 @@ if(now.getYear()-temporaryUser.getDateOfBirth().getYear()<18)
         return new RedirectView("/");
     }
 
-    ;
+
 
 
     @PostMapping("/parentverification")
@@ -115,7 +115,7 @@ if(now.getYear()-temporaryUser.getDateOfBirth().getYear()<18)
                 System.out.println(temporaryUser);
                 Parent parent = new Parent(temporaryUser.getParentEmail(), temporaryUser.getSerialNumber());
                 parent = parentRepository.save(parent);
-                AppUser appUser = new AppUser(temporaryUser.getUsername(), temporaryUser.getPassword(), temporaryUser.getParentEmail(), parent);
+                AppUser appUser = new AppUser(temporaryUser.getUsername(), temporaryUser.getPassword(), temporaryUser.getParentEmail(), parent,temporaryUser.getDateOfBirth());
                 userRepository.save(appUser);
                 temporaryUserRepository.delete(temporaryUser);
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getUserName(), appUser.getPassword()));
@@ -185,6 +185,5 @@ if(now.getYear()-temporaryUser.getDateOfBirth().getYear()<18)
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-
 
 }
