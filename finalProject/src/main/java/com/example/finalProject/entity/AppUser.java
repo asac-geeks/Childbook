@@ -3,6 +3,7 @@ package com.example.finalProject.entity;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -42,11 +43,22 @@ public class AppUser {
 	@Column(name = "createdAt")
 	private Date createdAt;
 
-	public AppUser(String userName, String password, String email,Parent parent) {
+	private LocalDate dateOfBirth;
+
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public AppUser(String userName, String password, String email, Parent parent ,LocalDate dateOfBirth) {
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
 		this.parent = parent;
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	@ManyToOne
