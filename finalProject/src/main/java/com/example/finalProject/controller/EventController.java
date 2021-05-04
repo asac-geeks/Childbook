@@ -26,7 +26,7 @@ public class EventController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/event")
+    @GetMapping("/events")
     public ResponseEntity getAllEvent(Principal p) {
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
@@ -122,6 +122,16 @@ public class EventController {
             }
             return new ResponseEntity(HttpStatus.OK);
 
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/event")
+    public ResponseEntity getEventByTitle(@RequestParam String title) {
+        try {
+            System.out.println(eventRepository.findByTitle(title).getBody());
+            return new ResponseEntity(eventRepository.findByTitle(title), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
