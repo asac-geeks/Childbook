@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -34,11 +35,10 @@ public class GroupAttendeesController {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 groupAttendees =  groupAttendeesRepository.save(new GroupAttendees(userDetails,groupRepository.findById(id).get()));
             }
-
-        }catch (Exception ex){
             return new ResponseEntity(groupAttendees, HttpStatus.OK);
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/attendGroup/{id}")
@@ -49,7 +49,7 @@ public class GroupAttendeesController {
             }catch (IllegalArgumentException argumentException){
               return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Deleted",HttpStatus.OK);
     }
 
     @GetMapping("/attendgroups/{id}")
@@ -57,7 +57,7 @@ public class GroupAttendeesController {
         Groups group = groupRepository.findById(id).get();
         try {
             if (group != null) {
-                Set<GroupAttendees> attendeesUsers = (Set<GroupAttendees>) group.getGroupAttendees();
+                List<GroupAttendees> attendeesUsers = group.getGroupAttendees();
                 return new ResponseEntity(attendeesUsers, HttpStatus.OK);
             }
             return new ResponseEntity(HttpStatus.OK);
