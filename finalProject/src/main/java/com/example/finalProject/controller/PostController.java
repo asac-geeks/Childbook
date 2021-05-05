@@ -47,9 +47,14 @@ public class PostController {
         Post post = new Post();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
-                Parent parent = parentRepository.findByParentEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 TemporaryPost temporaryPost = temporaryPostRepository.findById(id).get();
-                AppUser userDetails = userRepository.findByUserName(temporaryPost.getAppUser().getUserName());
+                AppUser userDetails = userRepository.findById(temporaryPost.getAppUser().getId()).get();
+                System.out.println(userDetails);
+                System.out.println(parent);
+                System.out.println(temporaryPost.getAppUser().getParent().getId());
+                System.out.println(parent.getId());
+
                 if (parent != null && temporaryPost.getAppUser().getParent().getId() == parent.getId()){
                     post.setVideoType(temporaryPost.getVideoType());
                     post.setVideoSrc(temporaryPost.getVideoSrc());
@@ -86,7 +91,7 @@ public class PostController {
                     postRepository.deleteById(id);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Deleted",HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -106,31 +111,48 @@ public class PostController {
                     post.setPublic(post.isPublic());
                     post.setVideoSrc(post.getVideoSrc());
                     post.setVideoType(post.getVideoType());
-                    postRepository.save(post);
+                    post = postRepository.save(post);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
-        }catch (Exception ex){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping("/post/{id}")
-    public ResponseEntity<Post> handleGetPost(@PathVariable Integer id) {
-        try{
-            Post post = postRepository.findById(id).get();
             return new ResponseEntity(post,HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
+    @GetMapping("/post/public/{id}")
+    public ResponseEntity<Post> handleGetPost(@PathVariable Integer id) {
+        try{
+            Post post = postRepository.findById(id).get();
+            if(post.isPublic()){
+                return new ResponseEntity(post,HttpStatus.OK);
+            }
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/post/My/{id}")
+    public ResponseEntity<Post> handleMySinglePost(@PathVariable Integer id) {
+        Post post = postRepository.findById(id).get();
+        try{
+            if((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                if((SecurityContextHolder.getContext().getAuthentication()).getName() == post.getAppUser().getUserName() || post.isPublic());
+                return new ResponseEntity(post,HttpStatus.OK);
+            }
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/userposts/{id}")
     public ResponseEntity<Post> handleUserPost(@PathVariable Integer id) {
-        try{
+        try {
             List<Post> posts = userRepository.findById(id).get().getPosts();
-            return new ResponseEntity(posts,HttpStatus.OK);
-        }catch (Exception ex){
+            return new ResponseEntity(posts, HttpStatus.OK);
+        } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
@@ -147,4 +169,5 @@ public class PostController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+
 }

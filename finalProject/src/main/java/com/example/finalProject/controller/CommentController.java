@@ -36,12 +36,12 @@ public class CommentController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/commentverification/{id}")
-    public ResponseEntity<Comment> commentVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
+    @PostMapping("/commentverification/{id}")
+    public ResponseEntity<Comment> commentVerification(@PathVariable Integer id){
         Comment comment = new Comment();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
-                Parent parent = parentRepository.findByParentEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 TemporaryComment temporaryComment = temporaryCommentRepository.findById(id).get();
                 AppUser userDetails = userRepository.findByUserName(temporaryComment.getAppUser().getUserName());
                 if (parent != null && userDetails.getParent().getId() == parent.getId()){
@@ -68,7 +68,8 @@ public class CommentController {
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-
+                System.out.println(userDetails);
+                System.out.println(commentUpdate.getAppUser());
                 if (commentUpdate != null && commentUpdate.getAppUser().getId() == userDetails.getId()){
                     commentUpdate.setBody(comment.getBody());
                     commentRepository.save(commentUpdate);
@@ -94,7 +95,7 @@ public class CommentController {
                     commentRepository.deleteById(id);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Deleted",HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

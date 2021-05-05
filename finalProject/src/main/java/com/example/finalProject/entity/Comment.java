@@ -29,6 +29,13 @@ public class Comment {
         this.groupPost = groupPost;
     }
 
+    public Comment(AppUser appUser, String body, GroupPost groupPost) {
+        this.appUser = appUser;
+        this.groupPost = groupPost;
+        this.body = body;
+    }
+
+
     public GroupPost getGroupPost() {
         return groupPost;
     }
