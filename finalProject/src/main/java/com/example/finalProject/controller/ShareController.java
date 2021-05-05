@@ -79,7 +79,7 @@ public class ShareController {
                     shareRepository.deleteById(id);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Deleted",HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
