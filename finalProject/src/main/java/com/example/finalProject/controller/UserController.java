@@ -225,8 +225,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/user")
-    public ResponseEntity userByName(@RequestParam String userName) {
+    @GetMapping("/user/{userName}")
+    public ResponseEntity userByName(@PathVariable String userName) {
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(userName);
