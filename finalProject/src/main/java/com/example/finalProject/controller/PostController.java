@@ -1,5 +1,6 @@
 package com.example.finalProject.controller;
 
+import com.example.finalProject.OpenNLP.PipeLine;
 import com.example.finalProject.entity.*;
 import com.example.finalProject.models.VerificationRequest;
 import com.example.finalProject.repository.*;
@@ -13,11 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 @Controller
 public class PostController {
     @Autowired
@@ -30,9 +34,11 @@ public class PostController {
     UserRepository userRepository;
 
 
+
+
     @PostMapping("/addPost")
     public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
-        if((SecurityContextHolder.getContext().getAuthentication()) != null){
+        if((SecurityContextHolder.getContext().getAuthentication()) != null && this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())){
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             temporaryPost.setAppUser(userDetails);
             temporaryPost = temporaryPostRepository.save(temporaryPost);
@@ -40,6 +46,21 @@ public class PostController {
             return new ResponseEntity(temporaryPost, HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    public boolean checkPostContent(String text){
+        StanfordCoreNLP stanfordCoreNLP = PipeLine.getPipeLine();
+        CoreDocument coreDocument = new CoreDocument(text);
+        stanfordCoreNLP.annotate(coreDocument);
+        List<CoreSentence> sentences = coreDocument.sentences();
+        for (CoreSentence sentence : sentences) {
+            String sentiment = sentence.sentiment();
+            if("Negative".equals(sentiment)){
+                return false;
+            }
+            System.out.println(sentiment + "\t" + sentence);
+        }
+        return true;
     }
 
     @PostMapping("/postverification/{id}")
