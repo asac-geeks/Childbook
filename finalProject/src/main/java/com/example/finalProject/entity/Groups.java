@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Groups {
@@ -32,10 +33,12 @@ public class Groups {
     private String title;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<GroupPost> groupPosts;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupAttendees> groupAttendees;
 
-    public Groups() {
-    }
+    public Groups() { }
 
     public Groups(AppUser appUser, String title, String body, String imageUrl) {
         this.appUser = appUser;

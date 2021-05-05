@@ -34,6 +34,24 @@ public class Likes {
     @JoinColumn(name = "user_id")
     AppUser appUser;
 
+    // ................................. Yazan added by ......................................
+    @ManyToOne
+    GroupPost groupPost;
+
+    public GroupPost getGroupPost() {
+        return groupPost;
+    }
+
+    public void setGroupPost(GroupPost groupPost) {
+        this.groupPost = groupPost;
+    }
+
+    public Likes(AppUser appUser, GroupPost groupPost) {
+        this.appUser = appUser;
+        this.groupPost = groupPost;
+    }
+
+// ................................. Yazan added by ......................................
 
     @ManyToOne
     @JoinColumn(name = "post_id")

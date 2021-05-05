@@ -1,6 +1,6 @@
 package com.example.finalProject.controller;
 
-import com.example.finalProject.models.GamesApi;
+import com.example.finalProject.entity.GamesApi;
 import com.example.finalProject.repository.FavouriteGamesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

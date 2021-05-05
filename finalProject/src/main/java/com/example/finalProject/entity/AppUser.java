@@ -1,6 +1,5 @@
 package com.example.finalProject.entity;
 
-import com.example.finalProject.models.GamesApi;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +29,9 @@ public class AppUser implements UserDetails {
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Share> shares;
 
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<GroupAttendees> attendees;
+
 	//===> added by salah ================================================================
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Groups> groups;
@@ -40,6 +42,19 @@ public class AppUser implements UserDetails {
 		this.groups = groups;
 	}
 	//===> added by salah ================================================================
+
+	//===> added by Yazan ================================================================
+	@OneToMany(mappedBy = "GroupPostUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<GroupPost> groupPosts;
+	public Set<GroupPost> getGroupPosts() {
+		return this.groupPosts;
+	}
+
+	public void setGroupPosts(Set<GroupPost> groupPosts) {
+		this.groupPosts = groupPosts;
+	}
+
+	//===> added by Yazan ================================================================
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)

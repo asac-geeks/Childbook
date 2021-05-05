@@ -12,6 +12,7 @@ import com.example.finalProject.repository.UserRepository;
 import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
+import org.hibernate.annotations.Parent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
