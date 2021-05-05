@@ -46,9 +46,12 @@ public class ShareController {
         Share share = new Share();
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
-                Parent parent = parentRepository.findByParentEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 TemporaryShare temporaryShare = temporaryShareRepository.findById(id).get();
                 AppUser userDetails = userRepository.findByUserName(temporaryShare.getAppUser().getUserName());
+                System.out.println(parent);
+                System.out.println(temporaryShare);
+                System.out.println(userDetails);
                 if (parent != null && userDetails.getParent().getId() == parent.getId()) {
                     share.setAppUser(userDetails);
                     share.setPost(temporaryShare.getPost());
