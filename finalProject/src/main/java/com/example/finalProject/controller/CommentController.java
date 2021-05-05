@@ -23,9 +23,6 @@ public class CommentController {
     @Autowired
     CommentRepository commentRepository;
 
-    @Autowired
-    ChildEventsRepository childEventsRepository;
-
     @PostMapping("/addComment/{id}")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id, @RequestBody TemporaryComment temporaryComment) {
         if((SecurityContextHolder.getContext().getAuthentication()) != null){
@@ -33,7 +30,6 @@ public class CommentController {
             Post post = postRepository.findById(id).get();
             temporaryComment.setAppUser(appUser);
             temporaryComment.setPost(post);
-            childEventsRepository.save(new ChildEvents(appUser.getParent(),temporaryComment));
             temporaryComment = temporaryCommentRepository.save(temporaryComment);
             return new ResponseEntity(temporaryComment, HttpStatus.OK);
         };

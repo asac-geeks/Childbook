@@ -20,9 +20,6 @@ public class Parent implements UserDetails {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<AppUser> appUsers;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<ChildEvents> childEvents;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -32,14 +29,6 @@ public class Parent implements UserDetails {
 
     @Column(unique=true,nullable = false)
     private String userName;
-
-    public Set<ChildEvents> getChildEvents() {
-        return childEvents;
-    }
-
-    public void setChildEvents(Set<ChildEvents> childEvents) {
-        this.childEvents = childEvents;
-    }
 
     public String getUserName() {
         return userName;

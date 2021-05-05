@@ -28,8 +28,6 @@ public class ShareController {
     @Autowired
     ShareRepository shareRepository;
 
-    @Autowired
-    ChildEventsRepository childEventsRepository;
 
     @PostMapping("/share/{id}")
     public ResponseEntity sharePost(@PathVariable int id) {
@@ -37,7 +35,6 @@ public class ShareController {
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             Post post = postRepository.findById(id).get();
             TemporaryShare share = new TemporaryShare(userDetails, post);
-            childEventsRepository.save(new ChildEvents(userDetails.getParent(),share));
             temporaryShareRepository.save(share);
             return new ResponseEntity(HttpStatus.OK);
         }

@@ -29,15 +29,12 @@ public class PostController {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    ChildEventsRepository childEventsRepository;
 
     @PostMapping("/addPost")
     public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
         if((SecurityContextHolder.getContext().getAuthentication()) != null){
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             temporaryPost.setAppUser(userDetails);
-            childEventsRepository.save(new ChildEvents(userDetails.getParent(),temporaryPost));
             temporaryPost = temporaryPostRepository.save(temporaryPost);
 
             return new ResponseEntity(temporaryPost, HttpStatus.OK);

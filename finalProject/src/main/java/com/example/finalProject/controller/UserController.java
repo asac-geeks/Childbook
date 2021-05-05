@@ -4,15 +4,16 @@ import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.Parent;
 import com.example.finalProject.models.AuthRequest;
 import com.example.finalProject.entity.TemporaryUser;
+import com.example.finalProject.models.ParentResponse;
 import com.example.finalProject.models.UpdateLocationRequest;
 import com.example.finalProject.models.VerificationRequest;
 import com.example.finalProject.repository.ParentRepository;
+import com.example.finalProject.repository.TemporaryPostRepository;
 import com.example.finalProject.repository.TemporaryUserRepository;
 import com.example.finalProject.repository.UserRepository;
 import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
-import org.hibernate.annotations.Parent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,9 @@ public class UserController {
 
     @Autowired
     private ParentRepository parentRepository;
+
+    @Autowired
+    TemporaryPostRepository temporaryPostRepository;
 
     @PostMapping("/authenticate")
     public String generateToken(@RequestBody AuthRequest authrequest) throws Exception {
@@ -166,7 +170,14 @@ public class UserController {
             System.out.println((SecurityContextHolder.getContext().getAuthentication()) ==null);
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                return new ResponseEntity(parent, HttpStatus.OK);
+                ParentResponse parentResponse = new ParentResponse();
+                for (AppUser appUser : parent.getAppUsers()){
+                    parentResponse.getComments().addAll(appUser.getComments());
+                    parentResponse.getPosts().addAll(appUser.getPosts());
+                    parentResponse.getShares().addAll(appUser.getShares());
+                }
+                parentResponse.setParent(parent);
+                return new ResponseEntity(parentResponse, HttpStatus.OK);
             }
         } catch (Exception ex) {
             return new ResponseEntity( HttpStatus.BAD_REQUEST);
@@ -198,15 +209,19 @@ public class UserController {
                 if (userDetails != null) {
                     System.out.println(user.toString());
                     userDetails.setUserName(user.getUserName());
-                    userDetails.setEmail(user.getEmail());
                     userDetails.setPassword(user.getPassword());
                     userRepository.save(userDetails);
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(userDetails.getUserName(), userDetails.getPassword());
+                    System.out.println(usernamePasswordAuthenticationToken);
+                    authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+                    return new ResponseEntity(jwtUtil.generateToken(userDetails.getUserName()),HttpStatus.OK);
                 }
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<AppUser>(HttpStatus.OK);
         } catch (Exception n) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
 
@@ -231,7 +246,7 @@ public class UserController {
                 AppUser userDetails = userRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
                 userDetails.setLocation(updateLocationRequest.getLocation());
                 userRepository.save(userDetails);
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity("updated",HttpStatus.OK);
             }
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -239,5 +254,23 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-
+    @PutMapping("/updateparent")
+    public ResponseEntity updateParentProfile(@RequestBody Parent parentUpdate){
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                Parent parent = parentRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
+                parent.setParentPassword(parentUpdate.getPassword());
+                parent.setUserName(parentUpdate.getUserName());
+                parent.setParentEmail(parentUpdate.getParentEmail());
+                parent = parentRepository.save(parent);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(parent.getUserName(), parent.getPassword());
+                System.out.println(usernamePasswordAuthenticationToken);
+                authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+                return new ResponseEntity(jwtUtil.generateToken(parent.getUserName()),HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 }

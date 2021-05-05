@@ -115,6 +115,15 @@ public class AppUser implements UserDetails {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<GamesApi> FavouriteGames;
 
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<TemporaryComment> temporaryComments;
+
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<TemporaryPost> temporaryPosts;
+
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<TemporaryShare> temporaryShares;
+
 	public int getId() {
 		return id;
 	}
@@ -271,5 +280,45 @@ public class AppUser implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public Set<GroupAttendees> getAttendees() {
+		return attendees;
+	}
+
+	public void setAttendees(Set<GroupAttendees> attendees) {
+		this.attendees = attendees;
+	}
+
+	public List<GamesApi> getFavouriteGames() {
+		return FavouriteGames;
+	}
+
+	public void setFavouriteGames(List<GamesApi> favouriteGames) {
+		FavouriteGames = favouriteGames;
+	}
+
+	public List<TemporaryComment> getTemporaryComments() {
+		return temporaryComments;
+	}
+
+	public void setTemporaryComments(List<TemporaryComment> temporaryComments) {
+		this.temporaryComments = temporaryComments;
+	}
+
+	public List<TemporaryPost> getTemporaryPosts() {
+		return temporaryPosts;
+	}
+
+	public void setTemporaryPosts(List<TemporaryPost> temporaryPosts) {
+		this.temporaryPosts = temporaryPosts;
+	}
+
+	public List<TemporaryShare> getTemporaryShares() {
+		return temporaryShares;
+	}
+
+	public void setTemporaryShares(List<TemporaryShare> temporaryShares) {
+		this.temporaryShares = temporaryShares;
 	}
 }
