@@ -1,4 +1,4 @@
-package com.example.finalProject.models;
+package com.example.finalProject.entity;
 import com.example.finalProject.entity.AppUser;
 
 import javax.persistence.*;

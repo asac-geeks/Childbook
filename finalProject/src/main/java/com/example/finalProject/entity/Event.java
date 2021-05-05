@@ -35,8 +35,7 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EventAttendees> eventAttendees;
 
-    public Event() {
-    }
+    public Event() {}
 
     public Event(AppUser appUser, String body, String location, String imageUrl,String title) {
         this.appUser = appUser;

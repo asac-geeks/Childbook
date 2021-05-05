@@ -31,7 +31,6 @@ public class LikesController {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 Likes like =  likesRepositoy.save(new Likes(userDetails,postRepository.findById(id).get()));
             }
-
         }catch (Exception ex){
             return new RedirectView("/error?message=Used%username");
         }

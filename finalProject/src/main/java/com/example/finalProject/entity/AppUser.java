@@ -1,6 +1,5 @@
 package com.example.finalProject.entity;
 
-import com.example.finalProject.models.GamesApi;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -27,6 +26,9 @@ public class AppUser {
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Share> shares;
 
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<GroupAttendees> attendees;
+
 	//===> added by salah ================================================================
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Groups> groups;
@@ -38,6 +40,19 @@ public class AppUser {
 	}
 	//===> added by salah ================================================================
 
+
+	//===> added by Yazan ================================================================
+	@OneToMany(mappedBy = "GroupPostUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<GroupPost> groupPosts;
+	public Set<GroupPost> getGroupPosts() {
+		return this.groupPosts;
+	}
+
+	public void setGroupPosts(Set<GroupPost> groupPosts) {
+		this.groupPosts = groupPosts;
+	}
+
+	//===> added by Yazan ================================================================
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
