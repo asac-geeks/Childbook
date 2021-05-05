@@ -30,6 +30,9 @@ import javax.lang.model.element.PackageElement;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -180,4 +183,19 @@ if(now.getYear()-temporaryUser.getDateOfBirth().getYear()<18)
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/allusers")
+    public ResponseEntity allUsers() {
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                Iterable<AppUser> allUsers=userRepository.findAll();
+                List users=new ArrayList();
+                for(AppUser user: allUsers){
+                   users.add(user.getUserName());                }
+                return new ResponseEntity(users,HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 }
