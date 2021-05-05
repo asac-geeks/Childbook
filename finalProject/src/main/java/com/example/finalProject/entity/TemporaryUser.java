@@ -12,12 +12,14 @@ public class TemporaryUser {
     private String userName;
     private String password;
     private String parentEmail;
+    private String location;
 
-    public TemporaryUser(String userName, String password, String parentEmail, LocalDate dateOfBirth) {
+    public TemporaryUser(String userName, String password, String parentEmail, LocalDate dateOfBirth,String location) {
         this.userName = userName;
         this.password = password;
         this.parentEmail = parentEmail;
         this.dateOfBirth = dateOfBirth;
+        this.location = location;
     }
 
     private LocalDate dateOfBirth;
@@ -72,6 +74,23 @@ public class TemporaryUser {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     @Override

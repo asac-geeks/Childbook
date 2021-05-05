@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class TemporaryPost {
+public class TemporaryPost extends EventToAccept {
     private String body;
 
     @CreationTimestamp

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class TemporaryShare  {
+public class TemporaryShare extends EventToAccept  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

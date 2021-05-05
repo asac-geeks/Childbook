@@ -28,41 +28,35 @@ public class ShareController {
     @Autowired
     ShareRepository shareRepository;
 
+    @Autowired
+    ChildEventsRepository childEventsRepository;
+
     @PostMapping("/share/{id}")
     public ResponseEntity sharePost(@PathVariable int id) {
         if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             Post post = postRepository.findById(id).get();
-            temporaryShareRepository.save(new TemporaryShare(userDetails, post));
+            TemporaryShare share = new TemporaryShare(userDetails, post);
+            childEventsRepository.save(new ChildEvents(userDetails.getParent(),share));
+            temporaryShareRepository.save(share);
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/shareverification/{id}")
-    public ResponseEntity<Share> shareVerification(@PathVariable Integer id, @RequestBody VerificationRequest verificationRequest) {
+    public ResponseEntity<Share> shareVerification(@PathVariable Integer id) {
         Share share = new Share();
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
-                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                Parent parent = parentRepository.findByParentEmailAndParentPassword(verificationRequest.getParentEmail(), verificationRequest.getSerialNumber());
-                System.out.println(parent);
-                System.out.println(userDetails.getParent().getId());
-                System.out.println(verificationRequest.getParentEmail());
-                System.out.println(verificationRequest.getSerialNumber());
-                System.out.println("قبل");
+                Parent parent = parentRepository.findByParentEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                TemporaryShare temporaryShare = temporaryShareRepository.findById(id).get();
+                AppUser userDetails = userRepository.findByUserName(temporaryShare.getAppUser().getUserName());
                 if (parent != null && userDetails.getParent().getId() == parent.getId()) {
-                    System.out.println("بعد");
-                    System.out.println(parent);
-                    TemporaryShare temporaryShare = temporaryShareRepository.findById(id).get();
                     share.setAppUser(userDetails);
                     share.setPost(temporaryShare.getPost());
-                    System.out.println("sssssssssssssssssss");
-//                    share.setPost(temporaryShare.getPost());
                     share = shareRepository.save(share);
-                    System.out.println("سسسسسسسسسسسسسسسسس");
                     temporaryShareRepository.delete(temporaryShare);
-                    System.out.println("سsssssssssssssssssssسسسسسسسسسسسسسسسس");
                 } else {
                     return new ResponseEntity(HttpStatus.BAD_REQUEST);
                 }

@@ -2,10 +2,7 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.entity.*;
 import com.example.finalProject.models.VerificationRequest;
-import com.example.finalProject.repository.ParentRepository;
-import com.example.finalProject.repository.PostRepository;
-import com.example.finalProject.repository.TemporaryPostRepository;
-import com.example.finalProject.repository.UserRepository;
+import com.example.finalProject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -32,28 +29,31 @@ public class PostController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ChildEventsRepository childEventsRepository;
+
     @PostMapping("/addPost")
     public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
         if((SecurityContextHolder.getContext().getAuthentication()) != null){
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             temporaryPost.setAppUser(userDetails);
-            userDetails.getParent().getParentPassword();
+            childEventsRepository.save(new ChildEvents(userDetails.getParent(),temporaryPost));
             temporaryPost = temporaryPostRepository.save(temporaryPost);
+
             return new ResponseEntity(temporaryPost, HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/postverification/{id}")
-    public ResponseEntity<Post> postVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
+    public ResponseEntity<Post> postVerification(@PathVariable Integer id){
         Post post = new Post();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
-                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                Parent parent = parentRepository.findByParentEmailAndParentPassword(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
-                if (parent != null && userDetails.getParent().getId() == parent.getId()){
-                    System.out.println(parent);
-                    TemporaryPost temporaryPost = temporaryPostRepository.findById(id).get();
+                Parent parent = parentRepository.findByParentEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                TemporaryPost temporaryPost = temporaryPostRepository.findById(id).get();
+                AppUser userDetails = userRepository.findByUserName(temporaryPost.getAppUser().getUserName());
+                if (parent != null && temporaryPost.getAppUser().getParent().getId() == parent.getId()){
                     post.setVideoType(temporaryPost.getVideoType());
                     post.setVideoSrc(temporaryPost.getVideoSrc());
                     post.setPostTitle(temporaryPost.getPostTitle());

@@ -23,6 +23,9 @@ public class CommentController {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    ChildEventsRepository childEventsRepository;
+
     @PostMapping("/addComment/{id}")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id, @RequestBody TemporaryComment temporaryComment) {
         if((SecurityContextHolder.getContext().getAuthentication()) != null){
@@ -30,6 +33,7 @@ public class CommentController {
             Post post = postRepository.findById(id).get();
             temporaryComment.setAppUser(appUser);
             temporaryComment.setPost(post);
+            childEventsRepository.save(new ChildEvents(appUser.getParent(),temporaryComment));
             temporaryComment = temporaryCommentRepository.save(temporaryComment);
             return new ResponseEntity(temporaryComment, HttpStatus.OK);
         };
@@ -41,11 +45,10 @@ public class CommentController {
         Comment comment = new Comment();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
-                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                Parent parent = parentRepository.findByParentEmailAndParentPassword(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
+                Parent parent = parentRepository.findByParentEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+                TemporaryComment temporaryComment = temporaryCommentRepository.findById(id).get();
+                AppUser userDetails = userRepository.findByUserName(temporaryComment.getAppUser().getUserName());
                 if (parent != null && userDetails.getParent().getId() == parent.getId()){
-                    System.out.println(parent);
-                    TemporaryComment temporaryComment = temporaryCommentRepository.findById(id).get();
                     comment.setBody(temporaryComment.getBody());
                     comment.setAppUser(temporaryComment.getAppUser());
                     comment.setPost(temporaryComment.getPost());

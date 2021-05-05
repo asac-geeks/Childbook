@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class TemporaryComment {
+public class TemporaryComment  extends EventToAccept {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

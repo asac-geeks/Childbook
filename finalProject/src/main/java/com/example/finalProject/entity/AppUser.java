@@ -2,15 +2,18 @@ package com.example.finalProject.entity;
 
 import com.example.finalProject.models.GamesApi;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class AppUser {
+public class AppUser implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +41,12 @@ public class AppUser {
 	}
 	//===> added by salah ================================================================
 
-
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createdAt")
 	private Date createdAt;
+
+	private String location;
 
 	private LocalDate dateOfBirth;
 
@@ -54,12 +58,13 @@ public class AppUser {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public AppUser(String userName, String password, String email, Parent parent ,LocalDate dateOfBirth) {
+	public AppUser(String userName, String password, String email, Parent parent ,LocalDate dateOfBirth,String location) {
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
 		this.parent = parent;
 		this.dateOfBirth = dateOfBirth;
+		this.location = location;
 	}
 
 	@ManyToOne
@@ -215,6 +220,41 @@ public class AppUser {
 		SentToUserMessage = sentToUserMessage;
 	}
 
+	public String getLocation() {
+		return location;
+	}
 
+	public void setLocation(String location) {
+		this.location = location;
+	}
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return userName;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }
