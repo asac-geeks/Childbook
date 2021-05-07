@@ -4,6 +4,7 @@ import com.example.finalProject.OpenNLP.PipeLine;
 import com.example.finalProject.entity.*;
 import com.example.finalProject.models.VerificationRequest;
 import com.example.finalProject.repository.*;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,13 @@ public class PostController {
         if((SecurityContextHolder.getContext().getAuthentication()) != null && this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())){
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             temporaryPost.setAppUser(userDetails);
+            // =====================salah
+            DateTime dtOrg = new DateTime(temporaryPost.getCreatedAt());
+            DateTime dtPlusOne = dtOrg.plusDays(1);
+
+
+            // =====================salah
+
             temporaryPost = temporaryPostRepository.save(temporaryPost);
 
             return new ResponseEntity(temporaryPost, HttpStatus.OK);
