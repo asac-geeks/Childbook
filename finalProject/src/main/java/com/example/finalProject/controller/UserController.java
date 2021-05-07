@@ -27,6 +27,11 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 
 
 @RestController
@@ -239,20 +244,29 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/userLocation")
-    public ResponseEntity updateUserLocation(@RequestBody UpdateLocationRequest updateLocationRequest ){
-        try {
-            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
-                AppUser userDetails = userRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
-                userDetails.setLocation(updateLocationRequest.getLocation());
-                userRepository.save(userDetails);
-                return new ResponseEntity("updated",HttpStatus.OK);
-            }
-        } catch (Exception ex) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
-    }
+//    @GetMapping("/allusers")
+//    public ResponseEntity allUsers() {
+//        try {
+//            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+//                Iterable<AppUser> allUsers=userRepository.findAll();
+//                List users=new ArrayList();
+//                for(AppUser user: allUsers){
+//                   users.add(user.getUserName());                }
+//                return new ResponseEntity(users,HttpStatus.OK);
+//    @PutMapping("/userLocation")
+//    public ResponseEntity updateUserLocation(@RequestBody UpdateLocationRequest updateLocationRequest ){
+//        try {
+//            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+//                AppUser userDetails = userRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
+//                userDetails.setLocation(updateLocationRequest.getLocation());
+//                userRepository.save(userDetails);
+//                return new ResponseEntity("updated",HttpStatus.OK);
+//            }
+//        } catch (Exception ex) {
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//    }
 
     @PutMapping("/updateparent")
     public ResponseEntity updateParentProfile(@RequestBody Parent parentUpdate){

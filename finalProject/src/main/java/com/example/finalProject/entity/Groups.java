@@ -102,6 +102,14 @@ public class Groups {
         return groupAttendees;
     }
 
+    public Set<GroupPost> getGroupPosts() {
+        return groupPosts;
+    }
+
+    public void setGroupPosts(Set<GroupPost> groupPosts) {
+        this.groupPosts = groupPosts;
+    }
+
     public void setGroupAttendees(List<GroupAttendees> groupAttendees) {
         this.groupAttendees = groupAttendees;
     }
