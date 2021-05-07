@@ -48,7 +48,7 @@ public class LikesController {
                     likesRepositoy.deleteById(id);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Delete",HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

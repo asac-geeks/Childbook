@@ -27,10 +27,9 @@ public class EventController {
     UserRepository userRepository;
 
     @GetMapping("/events")
-    public ResponseEntity getAllEvent(Principal p) {
+    public ResponseEntity getAllEvent() {
         try {
-            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
-            }
+
             System.out.println(eventRepository.findAll());
             return new ResponseEntity(eventRepository.findAll(), HttpStatus.OK);
         } catch (Exception ex) {
@@ -39,7 +38,7 @@ public class EventController {
     }
 
 
-    @PostMapping("/addevent/{id}")
+    @PostMapping("/addevent")
     public RedirectView addevent(@RequestBody Event event) {
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
@@ -52,11 +51,11 @@ public class EventController {
         } catch (Exception ex) {
             return new RedirectView("/error?message=Used%username");
         }
-        return new RedirectView("/");
+        return new RedirectView("/events");
     }
 
     @GetMapping("/event/{id}")
-    public ResponseEntity<Event> handleGetEvent(@RequestParam(value = "id") Integer id) {
+    public ResponseEntity<Event> handleGetEvent(@PathVariable(value = "id") Integer id) {
         try {
             Event event = eventRepository.findById(id).get();
             return new ResponseEntity(event, HttpStatus.OK);
@@ -106,7 +105,7 @@ public class EventController {
         } catch (Exception ex) {
             return new RedirectView("/error?message=Used%username");
         }
-        return new RedirectView("/");
+        return new RedirectView("/events");
     }
 
     @GetMapping("/userevents")
@@ -115,22 +114,20 @@ public class EventController {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 if (userDetails.getEvents() != null) {
-                    System.out.println("salah");
-                    Set<Event> userEvents = (Set<Event>) userDetails.getEvents();
+                    List<Event> userEvents = userDetails.getEvents();
                     return new ResponseEntity(userEvents, HttpStatus.OK);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/event")
-    public ResponseEntity getEventByTitle(@RequestParam String title) {
+    @GetMapping("/eventbytitle/{title}")
+    public ResponseEntity getEventByTitle(@PathVariable String title) {
         try {
-            System.out.println(eventRepository.findByTitle(title).getBody());
             return new ResponseEntity(eventRepository.findByTitle(title), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

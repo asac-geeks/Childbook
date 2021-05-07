@@ -162,5 +162,19 @@ public class GroupPost {
         this.shares = shares;
     }
 
+    public AppUser getGroupPostUser() {
+        return GroupPostUser;
+    }
 
+    public void setGroupPostUser(AppUser groupPostUser) {
+        GroupPostUser = groupPostUser;
+    }
+
+    public Groups getGroup() {
+        return group;
+    }
+
+    public void setGroup(Groups group) {
+        this.group = group;
+    }
 }

@@ -34,19 +34,25 @@ public class EventAttendeesController {
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+//                System.out.println(userDetails);
+//                System.out.println("userDetails");
                 EventAttendees eventAttendees = eventAttendeesRepository.save(new EventAttendees(userDetails, eventRepository.findById(id).get()));
+//                System.out.println("userDetails");
+                return new RedirectView("/attendusers/"+ userDetails.getId());
             }
 
         } catch (Exception ex) {
             return new RedirectView("/error?message=Used%username");
         }
-        return new RedirectView("/");
+        return new RedirectView("/error?message=Used%username");
     }
 
     @DeleteMapping("/attendEvent/{id}")
     public ResponseEntity deleteAttendEvent(@PathVariable("id") Integer id) {
         try {
-            eventAttendeesRepository.deleteById(id);
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                eventAttendeesRepository.deleteById(id);
+            }
         } catch (NullPointerException ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -59,7 +65,7 @@ public class EventAttendeesController {
         Event event = eventRepository.findById(id).get();
         try {
             if (event != null) {
-                Set<EventAttendees> attendeesUsers = (Set<EventAttendees>) event.getEventAttendees();
+                List<EventAttendees> attendeesUsers = event.getEventAttendees();
                 return new ResponseEntity(attendeesUsers, HttpStatus.OK);
             }
             return new ResponseEntity(HttpStatus.OK);
