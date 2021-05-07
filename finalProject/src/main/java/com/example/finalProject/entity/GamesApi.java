@@ -1,4 +1,4 @@
-package com.example.finalProject.models;
+package com.example.finalProject.entity;
 import com.example.finalProject.entity.AppUser;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ public class GamesApi {
 
     public GamesApi(){}
 
-    public GamesApi(String title, String thumbnail, String short_description, String game_url, String genre, String platform, String release_date, String freetogame_profile_url) {
+    public GamesApi(String title, String thumbnail, String short_description, String game_url, String genre, String platform, String release_date, String freetogame_profile_url, AppUser appUser) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.short_description = short_description;
@@ -32,6 +32,7 @@ public class GamesApi {
         this.platform = platform;
         this.release_date = release_date;
         this.freetogame_profile_url = freetogame_profile_url;
+        this.user = appUser;
     }
     public Integer getId() {
         return id;
@@ -98,6 +99,14 @@ public class GamesApi {
 
     public void setFreetogame_profile_url(String freetogame_profile_url) {
         this.freetogame_profile_url = freetogame_profile_url;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 
     @Override

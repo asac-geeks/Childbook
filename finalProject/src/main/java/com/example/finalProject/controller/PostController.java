@@ -1,11 +1,9 @@
 package com.example.finalProject.controller;
 
+import com.example.finalProject.OpenNLP.PipeLine;
 import com.example.finalProject.entity.*;
 import com.example.finalProject.models.VerificationRequest;
-import com.example.finalProject.repository.ParentRepository;
-import com.example.finalProject.repository.PostRepository;
-import com.example.finalProject.repository.TemporaryPostRepository;
-import com.example.finalProject.repository.UserRepository;
+import com.example.finalProject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -16,11 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 @Controller
 public class PostController {
     @Autowired
@@ -32,28 +33,50 @@ public class PostController {
     @Autowired
     UserRepository userRepository;
 
+
+
+
     @PostMapping("/addPost")
     public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
-        if((SecurityContextHolder.getContext().getAuthentication()) != null){
+        if((SecurityContextHolder.getContext().getAuthentication()) != null && this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())){
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             temporaryPost.setAppUser(userDetails);
-            userDetails.getParent().getParentPassword();
             temporaryPost = temporaryPostRepository.save(temporaryPost);
+
             return new ResponseEntity(temporaryPost, HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+    public boolean checkPostContent(String text){
+        StanfordCoreNLP stanfordCoreNLP = PipeLine.getPipeLine();
+        CoreDocument coreDocument = new CoreDocument(text);
+        stanfordCoreNLP.annotate(coreDocument);
+        List<CoreSentence> sentences = coreDocument.sentences();
+        for (CoreSentence sentence : sentences) {
+            String sentiment = sentence.sentiment();
+            if("Negative".equals(sentiment)){
+                return false;
+            }
+            System.out.println(sentiment + "\t" + sentence);
+        }
+        return true;
+    }
+
     @PostMapping("/postverification/{id}")
-    public ResponseEntity<Post> postVerification(@PathVariable Integer id , @RequestBody VerificationRequest verificationRequest){
+    public ResponseEntity<Post> postVerification(@PathVariable Integer id){
         Post post = new Post();
         try{
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
-                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                Parent parent = parentRepository.findByParentEmailAndParentPassword(verificationRequest.getParentEmail(),verificationRequest.getSerialNumber());
-                if (parent != null && userDetails.getParent().getId() == parent.getId()){
-                    System.out.println(parent);
-                    TemporaryPost temporaryPost = temporaryPostRepository.findById(id).get();
+                Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+                TemporaryPost temporaryPost = temporaryPostRepository.findById(id).get();
+                AppUser userDetails = userRepository.findById(temporaryPost.getAppUser().getId()).get();
+                System.out.println(userDetails);
+                System.out.println(parent);
+                System.out.println(temporaryPost.getAppUser().getParent().getId());
+                System.out.println(parent.getId());
+
+                if (parent != null && temporaryPost.getAppUser().getParent().getId() == parent.getId()){
                     post.setVideoType(temporaryPost.getVideoType());
                     post.setVideoSrc(temporaryPost.getVideoSrc());
                     post.setPostTitle(temporaryPost.getPostTitle());
@@ -89,7 +112,7 @@ public class PostController {
                     postRepository.deleteById(id);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Deleted",HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -109,31 +132,48 @@ public class PostController {
                     post.setPublic(post.isPublic());
                     post.setVideoSrc(post.getVideoSrc());
                     post.setVideoType(post.getVideoType());
-                    postRepository.save(post);
+                    post = postRepository.save(post);
                 }
             }
-            return new ResponseEntity(HttpStatus.OK);
-        }catch (Exception ex){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping("/post/{id}")
-    public ResponseEntity<Post> handleGetPost(@PathVariable Integer id) {
-        try{
-            Post post = postRepository.findById(id).get();
             return new ResponseEntity(post,HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
+    @GetMapping("/post/public/{id}")
+    public ResponseEntity<Post> handleGetPost(@PathVariable Integer id) {
+        try{
+            Post post = postRepository.findById(id).get();
+            if(post.isPublic()){
+                return new ResponseEntity(post,HttpStatus.OK);
+            }
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/post/My/{id}")
+    public ResponseEntity<Post> handleMySinglePost(@PathVariable Integer id) {
+        Post post = postRepository.findById(id).get();
+        try{
+            if((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                if((SecurityContextHolder.getContext().getAuthentication()).getName() == post.getAppUser().getUserName() || post.isPublic());
+                return new ResponseEntity(post,HttpStatus.OK);
+            }
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/userposts/{id}")
     public ResponseEntity<Post> handleUserPost(@PathVariable Integer id) {
-        try{
+        try {
             List<Post> posts = userRepository.findById(id).get().getPosts();
-            return new ResponseEntity(posts,HttpStatus.OK);
-        }catch (Exception ex){
+            return new ResponseEntity(posts, HttpStatus.OK);
+        } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
@@ -150,4 +190,5 @@ public class PostController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+
 }

@@ -1,16 +1,18 @@
 package com.example.finalProject.entity;
 
-import com.example.finalProject.models.GamesApi;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class AppUser {
+public class AppUser implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +29,9 @@ public class AppUser {
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Share> shares;
 
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<GroupAttendees> attendees;
+
 	//===> added by salah ================================================================
 	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	Set<Groups> groups;
@@ -38,11 +43,25 @@ public class AppUser {
 	}
 	//===> added by salah ================================================================
 
+	//===> added by Yazan ================================================================
+	@OneToMany(mappedBy = "GroupPostUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	Set<GroupPost> groupPosts;
+	public Set<GroupPost> getGroupPosts() {
+		return this.groupPosts;
+	}
+
+	public void setGroupPosts(Set<GroupPost> groupPosts) {
+		this.groupPosts = groupPosts;
+	}
+
+	//===> added by Yazan ================================================================
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createdAt")
 	private Date createdAt;
+
+	private String location;
 
 	private LocalDate dateOfBirth;
 
@@ -54,12 +73,13 @@ public class AppUser {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public AppUser(String userName, String password, String email, Parent parent ,LocalDate dateOfBirth) {
+	public AppUser(String userName, String password, String email, Parent parent ,LocalDate dateOfBirth,String location) {
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
 		this.parent = parent;
 		this.dateOfBirth = dateOfBirth;
+		this.location = location;
 	}
 
 	@ManyToOne
@@ -94,6 +114,15 @@ public class AppUser {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<GamesApi> FavouriteGames;
+
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<TemporaryComment> temporaryComments;
+
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<TemporaryPost> temporaryPosts;
+
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<TemporaryShare> temporaryShares;
 
 	public int getId() {
 		return id;
@@ -215,6 +244,81 @@ public class AppUser {
 		SentToUserMessage = sentToUserMessage;
 	}
 
+	public String getLocation() {
+		return location;
+	}
 
+	public void setLocation(String location) {
+		this.location = location;
+	}
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return userName;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	public Set<GroupAttendees> getAttendees() {
+		return attendees;
+	}
+
+	public void setAttendees(Set<GroupAttendees> attendees) {
+		this.attendees = attendees;
+	}
+
+	public List<GamesApi> getFavouriteGames() {
+		return FavouriteGames;
+	}
+
+	public void setFavouriteGames(List<GamesApi> favouriteGames) {
+		FavouriteGames = favouriteGames;
+	}
+
+	public List<TemporaryComment> getTemporaryComments() {
+		return temporaryComments;
+	}
+
+	public void setTemporaryComments(List<TemporaryComment> temporaryComments) {
+		this.temporaryComments = temporaryComments;
+	}
+
+	public List<TemporaryPost> getTemporaryPosts() {
+		return temporaryPosts;
+	}
+
+	public void setTemporaryPosts(List<TemporaryPost> temporaryPosts) {
+		this.temporaryPosts = temporaryPosts;
+	}
+
+	public List<TemporaryShare> getTemporaryShares() {
+		return temporaryShares;
+	}
+
+	public void setTemporaryShares(List<TemporaryShare> temporaryShares) {
+		this.temporaryShares = temporaryShares;
+	}
 }

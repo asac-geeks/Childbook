@@ -38,6 +38,28 @@ public class Share {
     @ManyToOne
     @JoinColumn(name = "post_id")
     Post post;
+    // ................................. Yazan added by ......................................
+    @ManyToOne
+    GroupPost groupPost;
+
+    public Share(AppUser appUser, GroupPost groupPost) {
+        this.appUser = appUser;
+        this.groupPost = groupPost;
+    }
+
+
+    public GroupPost getGroupPost() {
+        return groupPost;
+    }
+
+    public void setGroupPost(GroupPost groupPost) {
+        this.groupPost = groupPost;
+    }
+
+
+    // ................................. Yazan added by ......................................
+
+
 
     public AppUser getAppUser() {
         return appUser;

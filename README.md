@@ -94,7 +94,7 @@ First you will visit the home page you can access from the home page multi pages
 
 # Domain Modeling
 ### Wireframe:
-[Wireframe](https://drive.google.com/file/d/1ytDzcuK1z03WafD0V6LqbGC8Qtkwnpnl/view?usp=sharing)
+[Wireframe](https://drive.google.com/file/d/1p_KQMdyBk93beWleas00Z_vxXI-We97d/view?usp=sharing)
 
 # DataBase 
 ### The Schema of the DB:# Software Requirements :

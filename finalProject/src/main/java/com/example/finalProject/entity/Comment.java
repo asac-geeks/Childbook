@@ -18,6 +18,33 @@ public class Comment {
     @ManyToOne
     private Post post;
 
+    // ................................. Yazan added by ......................................
+    @ManyToOne
+    private GroupPost groupPost;
+
+    public Comment(AppUser appUser, Post post, String body, GroupPost groupPost) {
+        this.appUser = appUser;
+        this.post = post;
+        this.body = body;
+        this.groupPost = groupPost;
+    }
+
+    public Comment(AppUser appUser, String body, GroupPost groupPost) {
+        this.appUser = appUser;
+        this.groupPost = groupPost;
+        this.body = body;
+    }
+
+
+    public GroupPost getGroupPost() {
+        return groupPost;
+    }
+
+    public void setGroupPost(GroupPost groupPost) {
+        this.groupPost = groupPost;
+    }
+
+    // ................................. Yazan added by ......................................
     private String body;
 
     @CreationTimestamp

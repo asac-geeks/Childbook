@@ -55,17 +55,32 @@ public class GroupController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/group")
-    public ResponseEntity groupByName(@RequestParam String title) {
+    @GetMapping("/group/{title}")
+    public ResponseEntity groupByName(@PathVariable String title) {
         try {
-            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
-                Groups groups = groupRepository.findByTitle(title);
-                System.out.println(groups.getTitle());
-                return new ResponseEntity<Groups>(groups,HttpStatus.OK);
-            }
+                List<Groups> groups = groupRepository.findByTitle(title);
+                System.out.println("hi");
+                return new ResponseEntity(groups,HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/group/{id}")
+    public RedirectView deleteGroup(@PathVariable Integer id) {
+        Groups groups = groupRepository.findById(id).get();
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+
+                if (groups != null && groups.getAppUser().getId() == userDetails.getId()) {
+                    groupRepository.delete(groups);
+                }
+            }
+
+        } catch (Exception ex) {
+            return new RedirectView("/error?message=Used%username");
+        }
+        return new RedirectView("/events");
     }
 }
