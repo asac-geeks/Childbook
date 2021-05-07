@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +57,18 @@ public class UsersFollowersController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+    // ===========================salah
+    @DeleteMapping("/unfollow/{id}")
+    public ResponseEntity unFollowUser(@PathVariable int id) {
+        if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+            AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+            AppUser unFollowedUser = userRepository.findById(id).get();
+            usersFollowersRepository.deleteById(unFollowedUser.getId());
+            return new ResponseEntity(usersFollowersRepository.findAll(), HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+    // ===========================salah
 
 }
 
