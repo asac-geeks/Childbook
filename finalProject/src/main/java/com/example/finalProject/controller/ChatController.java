@@ -2,6 +2,7 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.Message;
+import com.example.finalProject.models.AxisModel;
 import com.example.finalProject.models.MessageModel;
 import com.example.finalProject.models.UserStorage;
 import com.example.finalProject.repository.MessageRepository;
@@ -27,6 +28,16 @@ public class ChatController {
         if (isExists) {
             simpMessagingTemplate.convertAndSend("/topic/messages/" + to, message);
         }
+    }
+
+    @MessageMapping("/bord/{to}")
+    public void drow(@DestinationVariable String to, AxisModel axisModel) {
+        System.out.println("handling send message: " + axisModel + " to: " + to);
+        System.out.println("hellllllllooooooooooooooooooo");
+//        boolean isExists = UserStorage.getInstance().getUsers().contains(to);
+//        if (isExists) {
+//            simpMessagingTemplate.convertAndSend("/topic/drow/" + to, axisModel);
+//        }
     }
 }
 

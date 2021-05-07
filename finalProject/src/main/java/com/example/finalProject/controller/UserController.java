@@ -253,6 +253,12 @@ public class UserController {
                 for(AppUser user: allUsers){
                    users.add(user.getUserName());                }
                 return new ResponseEntity(users,HttpStatus.OK);
+            }
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
     @PutMapping("/userLocation")
     public ResponseEntity updateUserLocation(@RequestBody UpdateLocationRequest updateLocationRequest ){
         try {
