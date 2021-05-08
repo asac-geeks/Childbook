@@ -29,15 +29,5 @@ public class ChatController {
             simpMessagingTemplate.convertAndSend("/topic/messages/" + to, message);
         }
     }
-
-    @MessageMapping("/bord/{to}")
-    public void drow(@DestinationVariable String to, AxisModel axisModel) {
-        System.out.println("handling send message: " + axisModel + " to: " + to);
-        System.out.println("hellllllllooooooooooooooooooo");
-//        boolean isExists = UserStorage.getInstance().getUsers().contains(to);
-//        if (isExists) {
-//            simpMessagingTemplate.convertAndSend("/topic/drow/" + to, axisModel);
-//        }
-    }
 }
 
