@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@CrossOrigin(origins= "*")
 public class CommentController {
     @Autowired
     PostRepository postRepository;

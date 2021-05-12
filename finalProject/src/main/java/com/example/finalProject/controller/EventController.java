@@ -17,7 +17,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
-@Controller
+@RestController
+@CrossOrigin(origins= "*")
 public class EventController {
 
     @Autowired

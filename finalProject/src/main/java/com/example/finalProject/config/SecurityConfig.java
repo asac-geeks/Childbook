@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,6 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.finalProject.filter.JwtFilter;
 import com.example.finalProject.service.CustomUserDetailService;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Properties;
 
@@ -71,5 +75,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable().authorizeRequests().antMatchers("/authenticate","/login", "/signup","/parentverification","/","/chat/{to}","/topic/messages/","/chat","/registration/{userName}","/fetchAllUsers","/games","/games/{id}","/games/category/{category}","/send", "/videos/childrenStories", "/videos/{query}", "/videos/prophetsStories","/loginAsParent","/post/public/{id}","/userposts/{id}","/events","/event/{id}","/eventbytitle/{title}","/group/{title}","/attendgroups/{id}","/topic/drow").permitAll().anyRequest().authenticated().and().exceptionHandling().and().sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	  	http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
   }
 }

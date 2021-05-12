@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Set;
 
 
-
 @RestController
+@CrossOrigin(origins= "*",maxAge = 3600)
 public class UserController {
     @Autowired
     SendEmailService sendEmailService;
@@ -116,8 +116,6 @@ public class UserController {
         }
         return new RedirectView("/");
     }
-
-
 
 
     @PostMapping("/parentverification")
@@ -229,7 +227,6 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-
     @GetMapping("/user/{userName}")
     public ResponseEntity userByName(@PathVariable String userName) {
         try {
@@ -259,6 +256,7 @@ public class UserController {
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
+
     @PutMapping("/userLocation")
     public ResponseEntity updateUserLocation(@RequestBody UpdateLocationRequest updateLocationRequest ){
         try {

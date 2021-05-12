@@ -26,7 +26,8 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
-@Controller
+@RestController
+@CrossOrigin(origins= "*")
 public class PostController {
     @Autowired
     TemporaryPostRepository temporaryPostRepository;
