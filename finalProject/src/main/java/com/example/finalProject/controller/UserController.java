@@ -90,7 +90,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public RedirectView signup(@RequestBody TemporaryUser temporaryUser) {
+    @CrossOrigin(origins= "*")
+    public ResponseEntity signup(@RequestBody TemporaryUser temporaryUser) {
         LocalDate now=LocalDate.now();
         System.out.println("age now ");
         System.out.println(now.getYear()-temporaryUser.getDateOfBirth().getYear());
@@ -105,16 +106,16 @@ public class UserController {
                     temporaryUser.setSerialNumber(serialNumber);
                     temporaryUserRepository.save(temporaryUser);
                     System.out.println("Saved");
-                    sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
+//                    sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
                 } else {
-                    return new RedirectView("/error?message=already used username");
+                    return new ResponseEntity( HttpStatus.BAD_REQUEST);
                 }
             } catch (Exception ex) {
                 System.out.println(ex);
-                return new RedirectView("/error?message=Used%username");
+                return new ResponseEntity( HttpStatus.BAD_REQUEST);
             }
         }
-        return new RedirectView("/");
+        return new ResponseEntity( HttpStatus.OK);
     }
 
 
