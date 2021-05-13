@@ -58,6 +58,7 @@ public class UserController {
     TemporaryPostRepository temporaryPostRepository;
 
     @PostMapping("/authenticate")
+    @CrossOrigin
     public String generateToken(@RequestBody AuthRequest authrequest) throws Exception {
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(authrequest.getUserName(), authrequest.getPassword());
@@ -106,7 +107,7 @@ public class UserController {
                     temporaryUser.setSerialNumber(serialNumber);
                     temporaryUserRepository.save(temporaryUser);
                     System.out.println("Saved");
-//                    sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
+                    sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
                 } else {
                     return new ResponseEntity( HttpStatus.BAD_REQUEST);
                 }
@@ -122,13 +123,13 @@ public class UserController {
 
 
     @PostMapping("/parentverification")
+    @CrossOrigin
     public String parentVerification(@RequestBody VerificationRequest verificationRequest) {
         try {
             TemporaryUser temporaryUser = temporaryUserRepository.findByParentEmailAndSerialNumber(verificationRequest.getParentEmail(), verificationRequest.getSerialNumber());
             if (temporaryUser != null) {
                 Parent parent = parentRepository.findByParentEmail(verificationRequest.getParentEmail());
                 System.out.println(parent);
-                System.out.println("parent");
                 if(parent == null){
                     parent = new Parent(temporaryUser.getParentEmail(), temporaryUser.getSerialNumber());
                     parent.setUserName(temporaryUser.getUserName() + " Parent");
@@ -150,6 +151,7 @@ public class UserController {
     };
 
     @PostMapping("/loginAsParent")
+    @CrossOrigin
     public String paren(@RequestBody AuthRequest authrequest) {
         try {
             System.out.println(authrequest.getUserName());
