@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins= "*")
 public class UserChatController {
     @GetMapping("/registration/{userName}")
     public ResponseEntity<Void> register(@PathVariable String userName) {

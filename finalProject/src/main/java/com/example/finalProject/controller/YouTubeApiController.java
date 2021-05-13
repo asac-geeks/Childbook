@@ -2,6 +2,7 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.models.youtube.YouTubeApi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 @RestController
+@CrossOrigin(origins= "*")
 public class YouTubeApiController {
     String API_KEY = "AIzaSyCl2DUwe_iYExrnevvbsjps2nf2ceTAmo8";
     @Autowired

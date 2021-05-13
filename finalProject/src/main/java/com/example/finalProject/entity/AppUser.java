@@ -156,40 +156,20 @@ public class AppUser implements UserDetails {
 		this.email = email;
 	}
 
-	public Parent getParent() {
-		return parent;
-	}
-
 	public void setParent(Parent parent) {
 		this.parent = parent;
-	}
-
-	public List<Post> getPosts() {
-		return posts;
 	}
 
 	public void setPosts(List<Post> posts) {
 		this.posts = posts;
 	}
 
-	public Set<Likes> getLikes() {
-		return likes;
-	}
-
 	public void setLikes(Set<Likes> likes) {
 		this.likes = likes;
 	}
 
-	public List<Comment> getComments() {
-		return comments;
-	}
-
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
-	}
-
-	public Set<Share> getShares() {
-		return shares;
 	}
 
 	public void setShares(Set<Share> shares) {
@@ -316,6 +296,10 @@ public class AppUser implements UserDetails {
 
 	public List<TemporaryShare> getTemporaryShares() {
 		return temporaryShares;
+	}
+
+	public Parent getParent() {
+		return parent;
 	}
 
 	public void setTemporaryShares(List<TemporaryShare> temporaryShares) {

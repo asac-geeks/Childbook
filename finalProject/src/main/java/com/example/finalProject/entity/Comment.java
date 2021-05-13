@@ -75,7 +75,7 @@ public class Comment {
     }
 
     public Post getPost() {
-        return post;
+        return null;
     }
 
     public void setPost(Post post) {

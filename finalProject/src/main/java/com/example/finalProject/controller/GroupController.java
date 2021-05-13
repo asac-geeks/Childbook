@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@CrossOrigin(origins= "*")
 public class GroupController {
     @Autowired
     UserRepository userRepository;

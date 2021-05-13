@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins= "*")
 public class GameController {
 
     @Autowired

@@ -15,11 +15,7 @@ public class TemporaryUser {
     private String location;
 
     public TemporaryUser(String userName, String password, String parentEmail, LocalDate dateOfBirth,String location) {
-        this.userName = userName;
-        this.password = password;
-        this.parentEmail = parentEmail;
-        this.dateOfBirth = dateOfBirth;
-        this.location = location;
+
     }
 
     private LocalDate dateOfBirth;
