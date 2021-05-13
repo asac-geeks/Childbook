@@ -3,6 +3,7 @@ package com.example.finalProject.controller;
 import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.Post;
 import com.example.finalProject.entity.UsersFollowers;
+import com.example.finalProject.repository.PostRepository;
 import com.example.finalProject.repository.UserRepository;
 import com.example.finalProject.repository.UsersFollowersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,14 @@ import java.util.ArrayList;
 import java.util.Set;
 
 @RestController
-@CrossOrigin(origins= "*")
+@CrossOrigin
 public class UsersFollowersController {
     @Autowired
     UserRepository userRepository;
     @Autowired
     UsersFollowersRepository usersFollowersRepository;
+    @Autowired
+    PostRepository postRepository;
 
     @PostMapping("/follow/{id}")
     public ResponseEntity followUser(@PathVariable int id) {
@@ -46,7 +49,7 @@ public class UsersFollowersController {
             ArrayList<Post> allFollowerPosts = new ArrayList();
             Set<UsersFollowers> allFollower = userDetails.getFollowers();
             for (UsersFollowers user : allFollower) {
-                allFollowerPosts.addAll(user.getAppUserFollower().getPosts());
+                allFollowerPosts.addAll(postRepository.findByAppUser(user.getAppUserFollower()));
             }
             String nameOfUser = userDetails.getUserName();
             return new ResponseEntity(allFollower, HttpStatus.OK);

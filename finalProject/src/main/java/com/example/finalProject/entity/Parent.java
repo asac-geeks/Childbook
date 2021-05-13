@@ -58,10 +58,6 @@ public class Parent implements UserDetails {
         this.parentPassword = parentPassword;
     }
 
-    public Set<AppUser> getAppUsers() {
-        return appUsers;
-    }
-
     public void setAppUsers(Set<AppUser> appUsers) {
         this.appUsers = appUsers;
     }

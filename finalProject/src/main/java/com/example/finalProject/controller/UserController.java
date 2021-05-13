@@ -1,16 +1,11 @@
 package com.example.finalProject.controller;
 
-import com.example.finalProject.entity.AppUser;
-import com.example.finalProject.entity.Parent;
+import com.example.finalProject.entity.*;
 import com.example.finalProject.models.AuthRequest;
-import com.example.finalProject.entity.TemporaryUser;
 import com.example.finalProject.models.ParentResponse;
 import com.example.finalProject.models.UpdateLocationRequest;
 import com.example.finalProject.models.VerificationRequest;
-import com.example.finalProject.repository.ParentRepository;
-import com.example.finalProject.repository.TemporaryPostRepository;
-import com.example.finalProject.repository.TemporaryUserRepository;
-import com.example.finalProject.repository.UserRepository;
+import com.example.finalProject.repository.*;
 import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
@@ -34,7 +29,7 @@ import java.util.Set;
 
 
 @RestController
-@CrossOrigin(origins= "*",maxAge = 3600)
+@CrossOrigin
 public class UserController {
     @Autowired
     SendEmailService sendEmailService;
@@ -46,13 +41,28 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ShareRepository shareRepository;
 
     @Autowired
     private TemporaryUserRepository temporaryUserRepository;
 
     @Autowired
     private ParentRepository parentRepository;
+
+    @Autowired
+    private TemporaryCommentRepository temporaryCommentRepository;
+
+    @Autowired
+    private TemporaryShareRepository temporaryShareRepository;
 
     @Autowired
     TemporaryPostRepository temporaryPostRepository;
@@ -175,18 +185,20 @@ public class UserController {
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 ParentResponse parentResponse = new ParentResponse();
-                for (AppUser appUser : parent.getAppUsers()){
-                    parentResponse.getComments().addAll(appUser.getComments());
-                    parentResponse.getPosts().addAll(appUser.getPosts());
-                    parentResponse.getShares().addAll(appUser.getShares());
+                Set<AppUser> children = userRepository.findByParent(parent);
+                for (AppUser appUser : children){
+                    parentResponse.getPosts().addAll(temporaryPostRepository.findByAppUser(appUser));
+                    parentResponse.getComments().addAll(temporaryCommentRepository.findByAppUser(appUser));
+                    parentResponse.getShares().addAll(temporaryShareRepository.findByAppUser(appUser));
                 }
+                parentResponse.setChildren(children);
                 parentResponse.setParent(parent);
                 return new ResponseEntity(parentResponse, HttpStatus.OK);
             }
         } catch (Exception ex) {
             return new ResponseEntity( HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity( HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity( HttpStatus.OK);
     };
 
 

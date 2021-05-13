@@ -77,7 +77,6 @@ public class PostController {
                 AppUser userDetails = userRepository.findById(temporaryPost.getAppUser().getId()).get();
                 System.out.println(userDetails);
                 System.out.println(parent);
-                System.out.println(temporaryPost.getAppUser().getParent().getId());
                 System.out.println(parent.getId());
 
                 if (parent != null && temporaryPost.getAppUser().getParent().getId() == parent.getId()) {
@@ -178,7 +177,7 @@ public class PostController {
     @GetMapping("/userposts/{id}")
     public ResponseEntity<Post> handleUserPost(@PathVariable Integer id) {
         try {
-            List<Post> posts = userRepository.findById(id).get().getPosts();
+            Set<Post> posts = postRepository.findByAppUser(userRepository.findById(id).get());
             return new ResponseEntity(posts, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -190,7 +189,8 @@ public class PostController {
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                return new ResponseEntity(userDetails.getPosts(), HttpStatus.OK);
+                Set<Post> posts = postRepository.findByAppUser(userDetails);
+                return new ResponseEntity(posts, HttpStatus.OK);
             }
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
