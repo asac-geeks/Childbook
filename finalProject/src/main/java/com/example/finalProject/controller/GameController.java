@@ -29,6 +29,7 @@ public class GameController {
     @Autowired
     UserRepository userRepository;
 
+    @CrossOrigin
     @GetMapping("/games")
     public ResponseEntity allGamesRoute(){
         String url = "https://www.freetogame.com/api/games";
@@ -39,7 +40,7 @@ public class GameController {
               return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
           }
     }
-
+    @CrossOrigin
     @GetMapping("/games/category/{category}")
     public ResponseEntity<GamesApi> getGameByCategory(@PathVariable("category") String category){
         String url = "https://www.freetogame.com/api/games?category="+ category;
@@ -51,6 +52,7 @@ public class GameController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/games/{id}")
     public ResponseEntity<GamesApi> findById(@PathVariable("id") Integer id) {
         String url = "https://www.freetogame.com/api/game?id="+id;
@@ -64,6 +66,7 @@ public class GameController {
               clientResponse -> Mono.empty())*/
     }
 
+    @CrossOrigin
     @PostMapping("/games/{id}")
     public Mono<GamesApi> addToFavourite(@PathVariable("id") Integer id) {
         String url = "https://www.freetogame.com/api/game?id=" + id;
@@ -77,17 +80,16 @@ public class GameController {
         return gameMono;
     }
 
-    @DeleteMapping("/games/{id}")
-    public ResponseEntity deleteAGame(@PathVariable Integer id){
-
-        try{
-            if((SecurityContextHolder.getContext().getAuthentication()) != null){
-                favouriteGamesRepository.deleteById(id);
-            }
-            return new ResponseEntity("/games", HttpStatus.OK);
-        }catch (Exception ex){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    //==========================salah
+    @CrossOrigin
+    @DeleteMapping("/deletefavgame/{id}")
+    public void deleteGame(@PathVariable int id) {
+        AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+        GamesApi deletedGame = favouriteGamesRepository.findById(id).get();
+        if (deletedGame.getUser().getId() == userDetails.getId()) {
+            favouriteGamesRepository.deleteById(id);
         }
     }
+    //==========================salah
 
 }
