@@ -2,6 +2,7 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.Message;
+import com.example.finalProject.models.AxisModel;
 import com.example.finalProject.models.MessageModel;
 import com.example.finalProject.models.UserStorage;
 import com.example.finalProject.repository.MessageRepository;
@@ -12,9 +13,11 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins= "*")
 public class ChatController {
 
     @Autowired

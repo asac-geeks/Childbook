@@ -14,7 +14,10 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
+@CrossOrigin(origins= "*")
 public class GameController {
 
     @Autowired
@@ -25,6 +28,7 @@ public class GameController {
 
     @Autowired
     UserRepository userRepository;
+
     @GetMapping("/games")
     public ResponseEntity allGamesRoute(){
         String url = "https://www.freetogame.com/api/games";
@@ -62,9 +66,9 @@ public class GameController {
 
     @PostMapping("/games/{id}")
     public Mono<GamesApi> addToFavourite(@PathVariable("id") Integer id) {
-        String url = "https://www.freetogame.com/api/game?id="+id;
+        String url = "https://www.freetogame.com/api/game?id=" + id;
         Mono<GamesApi> gameMono = webClient.get().uri(url).retrieve().bodyToMono(GamesApi.class);
-        if((SecurityContextHolder.getContext().getAuthentication()) != null){
+        if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             GamesApi game = gameMono.block();
             game.setUser(userDetails);
@@ -85,4 +89,5 @@ public class GameController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+
 }

@@ -1,44 +1,50 @@
 package com.example.finalProject.models;
 
-import com.example.finalProject.entity.Comment;
-import com.example.finalProject.entity.Parent;
-import com.example.finalProject.entity.Post;
-import com.example.finalProject.entity.Share;
+import com.example.finalProject.entity.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class ParentResponse {
-    private Set<Comment> comments = new HashSet();
-    private Set<Post> posts = new HashSet();
-    private Set<Share> shares = new HashSet();
+    private Set<TemporaryComment> comments = new HashSet();
+    private Set<TemporaryPost> posts = new HashSet();
+    private Set<TemporaryShare> shares = new HashSet();
+    private Set<AppUser> children = new HashSet();
     private Parent parent;
 
     public ParentResponse() {
     }
 
-    public Set<Comment> getComments() {
+    public Set<TemporaryComment> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(Set<TemporaryComment> comments) {
         this.comments = comments;
     }
 
-    public Set<Post> getPosts() {
+    public Set<TemporaryPost> getPosts() {
         return posts;
     }
 
-    public void setPosts(Set<Post> posts) {
+    public void setPosts(Set<TemporaryPost> posts) {
         this.posts = posts;
     }
 
-    public Set<Share> getShares() {
+    public Set<TemporaryShare> getShares() {
         return shares;
     }
 
-    public void setShares(Set<Share> shares) {
+    public void setShares(Set<TemporaryShare> shares) {
         this.shares = shares;
+    }
+
+    public Set<AppUser> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<AppUser> children) {
+        this.children = children;
     }
 
     public Parent getParent() {

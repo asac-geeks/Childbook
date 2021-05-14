@@ -1,16 +1,11 @@
 package com.example.finalProject.controller;
 
-import com.example.finalProject.entity.AppUser;
-import com.example.finalProject.entity.Parent;
+import com.example.finalProject.entity.*;
 import com.example.finalProject.models.AuthRequest;
-import com.example.finalProject.entity.TemporaryUser;
 import com.example.finalProject.models.ParentResponse;
 import com.example.finalProject.models.UpdateLocationRequest;
 import com.example.finalProject.models.VerificationRequest;
-import com.example.finalProject.repository.ParentRepository;
-import com.example.finalProject.repository.TemporaryPostRepository;
-import com.example.finalProject.repository.TemporaryUserRepository;
-import com.example.finalProject.repository.UserRepository;
+import com.example.finalProject.repository.*;
 import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
 
@@ -33,8 +28,8 @@ import java.util.List;
 import java.util.Set;
 
 
-
 @RestController
+@CrossOrigin
 public class UserController {
     @Autowired
     SendEmailService sendEmailService;
@@ -46,7 +41,16 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ShareRepository shareRepository;
 
     @Autowired
     private TemporaryUserRepository temporaryUserRepository;
@@ -55,9 +59,16 @@ public class UserController {
     private ParentRepository parentRepository;
 
     @Autowired
+    private TemporaryCommentRepository temporaryCommentRepository;
+
+    @Autowired
+    private TemporaryShareRepository temporaryShareRepository;
+
+    @Autowired
     TemporaryPostRepository temporaryPostRepository;
 
     @PostMapping("/authenticate")
+    @CrossOrigin
     public String generateToken(@RequestBody AuthRequest authrequest) throws Exception {
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(authrequest.getUserName(), authrequest.getPassword());
@@ -90,7 +101,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public RedirectView signup(@RequestBody TemporaryUser temporaryUser) {
+    @CrossOrigin(origins= "*")
+    public ResponseEntity signup(@RequestBody TemporaryUser temporaryUser) {
         LocalDate now=LocalDate.now();
         System.out.println("age now ");
         System.out.println(now.getYear()-temporaryUser.getDateOfBirth().getYear());
@@ -107,27 +119,25 @@ public class UserController {
                     System.out.println("Saved");
                     sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
                 } else {
-                    return new RedirectView("/error?message=already used username");
+                    return new ResponseEntity( HttpStatus.BAD_REQUEST);
                 }
             } catch (Exception ex) {
                 System.out.println(ex);
-                return new RedirectView("/error?message=Used%username");
+                return new ResponseEntity( HttpStatus.BAD_REQUEST);
             }
         }
-        return new RedirectView("/");
+        return new ResponseEntity( HttpStatus.OK);
     }
 
 
-
-
     @PostMapping("/parentverification")
+    @CrossOrigin
     public String parentVerification(@RequestBody VerificationRequest verificationRequest) {
         try {
             TemporaryUser temporaryUser = temporaryUserRepository.findByParentEmailAndSerialNumber(verificationRequest.getParentEmail(), verificationRequest.getSerialNumber());
             if (temporaryUser != null) {
                 Parent parent = parentRepository.findByParentEmail(verificationRequest.getParentEmail());
                 System.out.println(parent);
-                System.out.println("parent");
                 if(parent == null){
                     parent = new Parent(temporaryUser.getParentEmail(), temporaryUser.getSerialNumber());
                     parent.setUserName(temporaryUser.getUserName() + " Parent");
@@ -149,6 +159,7 @@ public class UserController {
     };
 
     @PostMapping("/loginAsParent")
+    @CrossOrigin
     public String paren(@RequestBody AuthRequest authrequest) {
         try {
             System.out.println(authrequest.getUserName());
@@ -176,18 +187,20 @@ public class UserController {
             if((SecurityContextHolder.getContext().getAuthentication()) != null){
                 Parent parent = parentRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 ParentResponse parentResponse = new ParentResponse();
-                for (AppUser appUser : parent.getAppUsers()){
-                    parentResponse.getComments().addAll(appUser.getComments());
-                    parentResponse.getPosts().addAll(appUser.getPosts());
-                    parentResponse.getShares().addAll(appUser.getShares());
+                Set<AppUser> children = userRepository.findByParent(parent);
+                for (AppUser appUser : children){
+                    parentResponse.getPosts().addAll(temporaryPostRepository.findByAppUser(appUser));
+                    parentResponse.getComments().addAll(temporaryCommentRepository.findByAppUser(appUser));
+                    parentResponse.getShares().addAll(temporaryShareRepository.findByAppUser(appUser));
                 }
+                parentResponse.setChildren(children);
                 parentResponse.setParent(parent);
                 return new ResponseEntity(parentResponse, HttpStatus.OK);
             }
         } catch (Exception ex) {
             return new ResponseEntity( HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity( HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity( HttpStatus.OK);
     };
 
 
@@ -229,7 +242,6 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-
     @GetMapping("/user/{userName}")
     public ResponseEntity userByName(@PathVariable String userName) {
         try {
@@ -267,6 +279,36 @@ public class UserController {
 //        }
 //        return new ResponseEntity(HttpStatus.BAD_REQUEST);
 //    }
+    @GetMapping("/allusers")
+    public ResponseEntity allUsers() {
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                Iterable<AppUser> allUsers=userRepository.findAll();
+                List users=new ArrayList();
+                for(AppUser user: allUsers){
+                   users.add(user.getUserName());                }
+                return new ResponseEntity(users,HttpStatus.OK);
+            }
+        }catch (Exception ex){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/userLocation")
+    public ResponseEntity updateUserLocation(@RequestBody UpdateLocationRequest updateLocationRequest ){
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                AppUser userDetails = userRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
+                userDetails.setLocation(updateLocationRequest.getLocation());
+                userRepository.save(userDetails);
+                return new ResponseEntity("updated",HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 
     @PutMapping("/updateparent")
     public ResponseEntity updateParentProfile(@RequestBody Parent parentUpdate){
@@ -287,4 +329,7 @@ public class UserController {
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
+
+
+
 }
