@@ -25,18 +25,20 @@ public class GameController {
     @Autowired
     UserRepository userRepository;
 
+    @CrossOrigin
     @GetMapping("/games")
     public Flux<GamesApi> allGamesRoute() {
         String url = "https://www.freetogame.com/api/games";
         return webClient.get().uri(url).retrieve().bodyToFlux(GamesApi.class);
     }
-
+    @CrossOrigin
     @GetMapping("/games/category/{category}")
     public Flux<GamesApi> getGameByCategory(@PathVariable("category") String category) {
         String url = "https://www.freetogame.com/api/games?category=" + category;
         return webClient.get().uri(url).retrieve().bodyToFlux(GamesApi.class);
     }
 
+    @CrossOrigin
     @GetMapping("/games/{id}")
     public Mono<GamesApi> findById(@PathVariable("id") Integer id) {
         String url = "https://www.freetogame.com/api/game?id=" + id;
@@ -45,6 +47,7 @@ public class GameController {
               clientResponse -> Mono.empty())*/
     }
 
+    @CrossOrigin
     @PostMapping("/games/{id}")
     public Mono<GamesApi> addToFavourite(@PathVariable("id") Integer id) {
         String url = "https://www.freetogame.com/api/game?id=" + id;
@@ -59,6 +62,7 @@ public class GameController {
     }
 
     //==========================salah
+    @CrossOrigin
     @DeleteMapping("/deletefavgame/{id}")
     public void deleteGame(@PathVariable int id) {
         AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -68,5 +72,4 @@ public class GameController {
         }
     }
     //==========================salah
-
 }

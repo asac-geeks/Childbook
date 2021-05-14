@@ -13,6 +13,7 @@ public class GamesApi {
     String title;
     String thumbnail;
     String short_description;
+    String description;
     String game_url;
     String genre;
     String platform;
@@ -23,10 +24,11 @@ public class GamesApi {
 
     public GamesApi(){}
 
-    public GamesApi(String title, String thumbnail, String short_description, String game_url, String genre, String platform, String release_date, String freetogame_profile_url, AppUser appUser) {
+    public GamesApi(String title, String thumbnail, String short_description, String description,  String game_url, String genre, String platform, String release_date, String freetogame_profile_url, AppUser appUser) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.short_description = short_description;
+        this.description = description;
         this.game_url = game_url;
         this.genre = genre;
         this.platform = platform;
@@ -109,6 +111,13 @@ public class GamesApi {
         this.user = user;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
     @Override
     public String toString() {
         return "{" +
