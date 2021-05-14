@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@CrossOrigin(origins= "*")
 public class EventAttendeesController {
     @Autowired
     UserRepository userRepository;
@@ -34,10 +35,10 @@ public class EventAttendeesController {
         try {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-                System.out.println(userDetails);
-                System.out.println("userDetails");
+//                System.out.println(userDetails);
+//                System.out.println("userDetails");
                 EventAttendees eventAttendees = eventAttendeesRepository.save(new EventAttendees(userDetails, eventRepository.findById(id).get()));
-                System.out.println("userDetails");
+//                System.out.println("userDetails");
                 return new RedirectView("/attendusers/"+ userDetails.getId());
             }
 
