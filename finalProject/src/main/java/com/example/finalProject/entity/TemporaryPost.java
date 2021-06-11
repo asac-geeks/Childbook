@@ -34,6 +34,7 @@ public class TemporaryPost {
     private String videoSrc;
     private String videoType;
     private String postTitle;
+    private boolean isSeen;
 
 
 
@@ -128,5 +129,11 @@ public class TemporaryPost {
         this.postTitle = postTitle;
     }
 
+    public boolean isSeen() {
+        return isSeen;
+    }
 
+    public void setSeen(boolean seen) {
+        isSeen = seen;
+    }
 }

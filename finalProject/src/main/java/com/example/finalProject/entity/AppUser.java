@@ -286,16 +286,8 @@ public class AppUser implements UserDetails {
 		this.temporaryComments = temporaryComments;
 	}
 
-	public List<TemporaryPost> getTemporaryPosts() {
-		return temporaryPosts;
-	}
-
 	public void setTemporaryPosts(List<TemporaryPost> temporaryPosts) {
 		this.temporaryPosts = temporaryPosts;
-	}
-
-	public List<TemporaryShare> getTemporaryShares() {
-		return temporaryShares;
 	}
 
 	public Parent getParent() {
