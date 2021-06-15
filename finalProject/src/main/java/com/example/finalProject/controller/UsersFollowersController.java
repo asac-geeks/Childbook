@@ -52,7 +52,7 @@ public class UsersFollowersController {
                 allFollowerPosts.addAll(postRepository.findByAppUser(user.getAppUserFollower()));
             }
             String nameOfUser = userDetails.getUserName();
-            return new ResponseEntity(allFollower, HttpStatus.OK);
+            return new ResponseEntity(allFollowerPosts, HttpStatus.OK);
 
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);

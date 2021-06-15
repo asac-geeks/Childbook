@@ -1,10 +1,7 @@
 package com.example.finalProject.controller;
 
 import com.example.finalProject.entity.*;
-import com.example.finalProject.models.AuthRequest;
-import com.example.finalProject.models.ParentResponse;
-import com.example.finalProject.models.UpdateLocationRequest;
-import com.example.finalProject.models.VerificationRequest;
+import com.example.finalProject.models.*;
 import com.example.finalProject.repository.*;
 import com.example.finalProject.service.SendEmailService;
 import com.example.finalProject.util.JwtUtil;
@@ -22,7 +19,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -135,9 +131,16 @@ public class UserController {
     public String parentVerification(@RequestBody VerificationRequest verificationRequest) {
         try {
             TemporaryUser temporaryUser = temporaryUserRepository.findByParentEmailAndSerialNumber(verificationRequest.getParentEmail(), verificationRequest.getSerialNumber());
+            System.out.println(verificationRequest.getParentEmail());
+            System.out.println(verificationRequest.getSerialNumber());
+            System.out.println(temporaryUser);
+            System.out.println("temporaryUser");
+
             if (temporaryUser != null) {
                 Parent parent = parentRepository.findByParentEmail(verificationRequest.getParentEmail());
                 System.out.println(parent);
+                System.out.println("temporaryUserin");
+
                 if(parent == null){
                     parent = new Parent(temporaryUser.getParentEmail(), temporaryUser.getSerialNumber());
                     parent.setUserName(temporaryUser.getUserName() + " Parent");
@@ -311,7 +314,14 @@ public class UserController {
     @PutMapping("/updateparent")
     public ResponseEntity updateParentProfile(@RequestBody Parent parentUpdate){
         try {
+            System.out.println(parentUpdate);
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                System.out.println("hereeeeee");
+                System.out.println(parentUpdate.getParentEmail());
+                System.out.println(parentUpdate.getPassword());
+                System.out.println(parentUpdate.getUserName());
+
                 Parent parent = parentRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
                 parent.setParentPassword(parentUpdate.getPassword());
                 parent.setUserName(parentUpdate.getUserName());
@@ -328,6 +338,71 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping("/deleteparent")
+    public ResponseEntity deleteParentProfile(){
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                Parent parent = parentRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
+                parentRepository.delete(parent);
+                return new ResponseEntity(HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 
 
+    @DeleteMapping("/createchild")
+    public ResponseEntity createChild(@RequestBody AppUser appUser){
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                Parent parent = parentRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
+                appUser.setParent(parent);
+                userRepository.save(appUser);
+                return new ResponseEntity(HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/isseen")
+    public ResponseEntity isSeen(@RequestParam String type){
+        try {
+            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+                Parent parent = parentRepository.findByUserName((SecurityContextHolder.getContext().getAuthentication()).getName());
+                Set<AppUser> children = userRepository.findByParent(parent);
+                if(type == "post"){
+                    for (AppUser appUser : children){
+                        for(TemporaryPost tempPost: temporaryPostRepository.findByAppUser(appUser)){
+                            tempPost.setSeen(true);
+                            temporaryPostRepository.save(tempPost);
+                        };
+                    }
+                }
+                if(type == "comment"){
+                    for (AppUser appUser : children){
+                        for(TemporaryComment tempComment: temporaryCommentRepository.findByAppUser(appUser)){
+                            tempComment.setSeen(true);
+                            temporaryCommentRepository.save(tempComment);
+                        };
+                    }
+                }
+                if(type == "share"){
+                    for (AppUser appUser : children){
+                        for(TemporaryShare temporaryShare: temporaryShareRepository.findByAppUser(appUser)){
+                            temporaryShare.setSeen(true);
+                            temporaryShareRepository.save(temporaryShare);
+                        };
+                    }
+                }
+                return new ResponseEntity(HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 }

@@ -20,6 +20,9 @@ public class TemporaryComment {
 
     private String body;
 
+    private boolean isSeen;
+
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt")
@@ -81,5 +84,13 @@ public class TemporaryComment {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(boolean seen) {
+        isSeen = seen;
     }
 }

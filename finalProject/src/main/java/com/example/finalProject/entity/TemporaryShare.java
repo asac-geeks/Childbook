@@ -12,6 +12,8 @@ public class TemporaryShare  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private boolean isSeen;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt")
@@ -69,5 +71,13 @@ public class TemporaryShare  {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(boolean seen) {
+        isSeen = seen;
     }
 }
