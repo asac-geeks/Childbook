@@ -2,6 +2,9 @@ package com.example.finalProject.controller;
 
 import com.example.finalProject.OpenNLP.PipeLine;
 import com.example.finalProject.entity.*;
+import com.example.finalProject.models.ChildTemResponse;
+import com.example.finalProject.models.MyPostsResponse;
+import com.example.finalProject.models.ParentResponse;
 import com.example.finalProject.models.VerificationRequest;
 import com.example.finalProject.repository.*;
 import org.joda.time.DateTime;
@@ -38,8 +41,17 @@ public class PostController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ShareRepository shareRepository;
 
-//    @Scheduled(fixedDelayString = "PT24H")
+    @Autowired
+    private TemporaryCommentRepository temporaryCommentRepository;
+
+    @Autowired
+    private TemporaryShareRepository temporaryShareRepository;
+
+
+    //    @Scheduled(fixedDelayString = "PT24H")
     @PostMapping("/addPost")
     public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
         if ((SecurityContextHolder.getContext().getAuthentication()) != null && this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())) {
@@ -190,12 +202,28 @@ public class PostController {
             if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
                 Set<Post> posts = postRepository.findByAppUser(userDetails);
-                return new ResponseEntity(posts, HttpStatus.OK);
+                Set<Share> shares = shareRepository.findByAppUser(userDetails);
+                MyPostsResponse myPostsResponse = new MyPostsResponse(posts,shares);
+                return new ResponseEntity(myPostsResponse, HttpStatus.OK);
             }
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
+    @GetMapping("/childtemp")
+    public ResponseEntity childTemp() {
+        try {
+            System.out.println((SecurityContextHolder.getContext().getAuthentication()) ==null);
+            if((SecurityContextHolder.getContext().getAuthentication()) != null){
+                AppUser appUser = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+                ChildTemResponse childTemResponse = new ChildTemResponse(temporaryCommentRepository.findByAppUser(appUser), temporaryPostRepository.findByAppUser(appUser), temporaryShareRepository.findByAppUser(appUser));
+                return new ResponseEntity(childTemResponse, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity( HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity( HttpStatus.OK);
+    };
 }
