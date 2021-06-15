@@ -152,6 +152,7 @@ public class UserController {
                 userRepository.save(appUser);
                 temporaryUserRepository.delete(temporaryUser);
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getUserName(), appUser.getPassword()));
+                System.out.println("Saved1");
                 return jwtUtil.generateToken(appUser.getUserName());
             } else {
                 return "Wrong Email or Password";
@@ -244,21 +245,17 @@ public class UserController {
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-
     @GetMapping("/user/{userName}")
+    @CrossOrigin
     public ResponseEntity userByName(@PathVariable String userName) {
         try {
-            if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
                 AppUser userDetails = userRepository.findByUserName(userName);
                 System.out.println(userDetails.getEmail());
                 return new ResponseEntity<AppUser>(userDetails,HttpStatus.OK);
-            }
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-
 //    @GetMapping("/allusers")
 //    public ResponseEntity allUsers() {
 //        try {
@@ -282,6 +279,7 @@ public class UserController {
 //        }
 //        return new ResponseEntity(HttpStatus.BAD_REQUEST);
 //    }
+
     @GetMapping("/allusers")
     public ResponseEntity allUsers() {
         try {
