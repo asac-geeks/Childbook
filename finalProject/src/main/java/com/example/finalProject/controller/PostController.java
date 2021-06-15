@@ -52,6 +52,7 @@ public class PostController {
 
 
     //    @Scheduled(fixedDelayString = "PT24H")
+    @CrossOrigin
     @PostMapping("/addPost")
     public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
         if ((SecurityContextHolder.getContext().getAuthentication()) != null && this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())) {
@@ -65,6 +66,7 @@ public class PostController {
     }
 
     public boolean checkPostContent(String text) {
+        System.out.println(text);
         StanfordCoreNLP stanfordCoreNLP = PipeLine.getPipeLine();
         CoreDocument coreDocument = new CoreDocument(text);
         stanfordCoreNLP.annotate(coreDocument);
