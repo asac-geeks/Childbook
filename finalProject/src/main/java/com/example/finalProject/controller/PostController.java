@@ -54,13 +54,20 @@ public class PostController {
     //    @Scheduled(fixedDelayString = "PT24H")
     @CrossOrigin
     @PostMapping("/addPost")
-    public ResponseEntity<Post> addPost(@RequestBody TemporaryPost temporaryPost) {
-        if ((SecurityContextHolder.getContext().getAuthentication()) != null && this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())) {
-            AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-            temporaryPost.setAppUser(userDetails);
-            temporaryPost = temporaryPostRepository.save(temporaryPost);
+    public ResponseEntity addPost(@RequestBody TemporaryPost temporaryPost) {
+        if ((SecurityContextHolder.getContext().getAuthentication()) != null ) {
+            if(this.checkPostContent(temporaryPost.getBody()) && this.checkPostContent(temporaryPost.getPostTitle())){
+                AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+                temporaryPost.setAppUser(userDetails);
+                System.out.println("Content");
+                temporaryPost = temporaryPostRepository.save(temporaryPost);
+                return new ResponseEntity(temporaryPost, HttpStatus.OK);
+            }else{
+                System.out.println("Bad Content");
 
-            return new ResponseEntity(temporaryPost, HttpStatus.OK);
+                return new ResponseEntity("Bad Content", HttpStatus.OK);
+            }
+
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
@@ -116,9 +123,7 @@ public class PostController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity(post, HttpStatus.OK);
-    }
-
-    ;
+    };
 
     @DeleteMapping("/post/{id}")
     public ResponseEntity handleDeletePost(@RequestParam(value = "id") Integer id) {
@@ -168,6 +173,16 @@ public class PostController {
                 return new ResponseEntity(post, HttpStatus.OK);
             }
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/postTemp/public/{id}")
+    public ResponseEntity handleGetPostTemp(@PathVariable Integer id) {
+        try {
+            TemporaryPost post = temporaryPostRepository.findById(id).get();
+            return new ResponseEntity(post, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

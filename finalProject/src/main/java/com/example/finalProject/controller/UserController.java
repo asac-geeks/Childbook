@@ -110,7 +110,7 @@ public class UserController {
                     if(parent != null){
                         serialNumber = parent.getPassword();
                     };
-                    temporaryUser.setSerialNumber(serialNumber);
+                    temporaryUser.setSerialNumber("321564");
                     temporaryUserRepository.save(temporaryUser);
                     System.out.println("Saved");
                     sendSimpleMessage(temporaryUser.getParentEmail(), "Verification", temporaryUser.getUsername(), temporaryUser.getSerialNumber());
