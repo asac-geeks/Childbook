@@ -3,6 +3,7 @@ package com.example.finalProject.controller;
 import com.example.finalProject.entity.AppUser;
 import com.example.finalProject.entity.Post;
 import com.example.finalProject.entity.UsersFollowers;
+import com.example.finalProject.models.feedRes;
 import com.example.finalProject.repository.PostRepository;
 import com.example.finalProject.repository.UserRepository;
 import com.example.finalProject.repository.UsersFollowersRepository;
@@ -44,15 +45,19 @@ public class UsersFollowersController {
     @GetMapping("/feeds")
     public ResponseEntity renderFeeds() {
         if ((SecurityContextHolder.getContext().getAuthentication()) != null) {
+            System.out.println("hereeeeeeeeeee");
             AppUser userDetails = userRepository.findByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
             System.out.println(userDetails);
+            System.out.println("hereeeeeeeeeee11111111");
             ArrayList<Post> allFollowerPosts = new ArrayList();
             Set<UsersFollowers> allFollower = userDetails.getFollowers();
             for (UsersFollowers user : allFollower) {
                 allFollowerPosts.addAll(postRepository.findByAppUser(user.getAppUserFollower()));
             }
+            feedRes feedRes = new feedRes(allFollowerPosts);
+            System.out.println(allFollowerPosts);
             String nameOfUser = userDetails.getUserName();
-            return new ResponseEntity(allFollowerPosts, HttpStatus.OK);
+            return new ResponseEntity(feedRes, HttpStatus.OK);
 
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
